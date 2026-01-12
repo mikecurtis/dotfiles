@@ -1,0 +1,31 @@
+[core]
+  pager = delta
+  excludesFile = "{{.chezmoi.destDir}}/.config/git/ignore"
+
+[init]
+  defaultBranch = main
+
+[user]
+  name = {{.chezmoi.username}}
+  email = {{.chezmoi.username}}@users.noreply.github.com
+
+[credential "https://github.com"]
+  helper = !gh auth git-credential
+
+[credential "https://gist.github.com"]
+  helper = !gh auth git-credential
+
+[interactive]
+  diffFilter = delta --color-only
+
+[delta]
+  navigate = true
+  diff-highlight = true
+  line-numbers = true
+  side-by-side = true
+
+[merge]
+  conflictstyle = diff3
+
+[diff]
+  colorMoved = default

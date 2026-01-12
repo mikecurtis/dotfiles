@@ -1,0 +1,12 @@
+.bash_history
+.bash_logout
+.bashrc
+.cache
+.config/chezmoi/chezmoistate.boltdb
+.config/gh
+.lesshst
+.local
+.profile
+.ssh
+.viminfo
+src
