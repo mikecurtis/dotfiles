@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -ex
 
@@ -105,11 +105,11 @@ check_install_mise () {
       echo "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.gpg arch=amd64] https://mise.jdx.dev/deb stable main" | sudo tee /etc/apt/sources.list.d/mise.list
     fi
     check_install mise
-    source <(mise activate bash)
   fi
 }
 
 check_bootstrap () {
+  source <(mise activate bash)
   mise use -g chezmoi || fail "chezmoi install failed"
   chezmoi init ${REPO} --apply || fail "could not init chezmoi"
 }
