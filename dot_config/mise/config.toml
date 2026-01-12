@@ -1,2 +1,11 @@
 [tools]
+bat = "latest"
 chezmoi = "latest"
+delta = "latest"
+eza = "latest"
+fzf = "latest"
+github-cli = "latest"
+neovim = "latest"
+ripgrep = "latest"
+starship = "latest"
+tmux = "latest"
