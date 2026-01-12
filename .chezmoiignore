@@ -9,4 +9,6 @@
 .profile
 .ssh
 .viminfo
+README.md
 src
+util
