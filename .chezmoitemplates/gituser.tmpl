@@ -1,0 +1,13 @@
+{{- /* This deletes an empty string before the template */ -}}
+{{ if and
+     (and
+       (hasKey . "chezmoidata")
+       (hasKey .chezmoidata "gituser")
+     )
+     (ne .chezmoidata.gituser "")
+}}
+  {{- .chezmoidata.gituser -}}
+{{ else }}
+  {{- .chezmoi.username -}}
+{{ end }}
+{{- /* This deletes an empty string after the template */ -}}
