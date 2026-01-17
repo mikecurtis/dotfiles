@@ -1,11 +1,10 @@
-export USER="${USER:-$(whoami)}"
-export HOME="${HOME:-~}"
+export USER="{{ .chezmoi.username }}"
+export GITUSER="{{ template "gituser.tmpl" . }}"
+export HOME="{{ .chezmoi.homeDir }}"
+export HOSTNAME="{{ .chezmoi.hostname }}"
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${HOME}/.config}"
-export HOSTNAME="${HOSTNAME:-$(hostname 2>/dev/null)}"
-export HOSTNAME="${HOSTNAME:-$(cat /etc/hostname 2>/dev/null)}"
 
 export PATH="${PATH}:${HOME}/.local/bin"
-export DOTFILE_DIR="${HOME}/.dotfiles"
 
 typeset -U path cdpath fpath manpath
 autoload -U compinit && compinit
@@ -180,7 +179,7 @@ fi
 
 # TODO list via github issues
 function todo {
-  local repo="${USER}/TODO"
+  local repo="${GITUSER}/TODO"
   local op="list"
   if [ $# -gt 0 ]; then
     op="$1"

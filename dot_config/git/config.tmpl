@@ -6,8 +6,8 @@
   defaultBranch = main
 
 [user]
-  name = {{ template "gituser.tmpl" . }}
-  email = {{ template "gituser.tmpl" . }}@users.noreply.github.com
+  name = "{{ template "gituser.tmpl" . }}"
+  email = "{{ template "gituser.tmpl" . }}@users.noreply.github.com"
 
 [credential "https://github.com"]
   helper = !gh auth git-credential
