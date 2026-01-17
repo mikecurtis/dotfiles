@@ -12,3 +12,4 @@
 README.md
 src
 util
+{{ if ne .chezmoi.os "darwin" }}.config/packages/brew.*{{ end }}
