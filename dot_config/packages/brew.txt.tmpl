@@ -1,0 +1,18 @@
+{{ if hasKey . "chezmoidata" -}}
+  {{- if hasKey .chezmoidata "brew" -}}
+    {{- range .chezmoidata.brew.brews -}}
+brew {{ . | quote }}
+{{    end -}}
+    {{- range .chezmoidata.brew.casks -}}
+cask {{ . | quote }}
+{{    end }}
+  {{- end -}}
+  {{ if hasKey .chezmoidata "brewlocal" -}}
+    {{- range .chezmoidata.brewlocal.brews -}}
+brew {{ . | quote }}
+{{    end }}
+    {{- range .chezmoidata.brewlocal.casks -}}
+cask {{ . | quote }}
+{{    end }}
+  {{- end }}
+{{- end -}}
