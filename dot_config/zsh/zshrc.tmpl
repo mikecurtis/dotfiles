@@ -237,12 +237,34 @@ EOF
   eval gh -R "${repo}" issue ${cmd}
 }
 
-{{ if eq .chezmoi.os "darwin" }}
+{{ if eq .chezmoi.os "darwin" -}}
 # macos utilities
 export BREWUSER="{{ template "brewuser.tmpl" . }}"
 export HOMEBREW_NO_AUTO_UPDATE=1
 
 brew () {
-  su -l ${BREWUSER} -c "brew $*"
+  case "$1" in
+    install|update|upgrade|uninstall)
+      echo "Switching user to ${BREWUSER} for brew..."
+      su -l ${BREWUSER} -c "brew $*"
+      ;;
+    *)
+      /opt/homebrew/bin/brew "$@"
+      ;;
+  esac
 }
-{{ end }}
+{{- end }}
+
+{{ if eq .chezmoi.os "darwin" -}}
+alias pu="su -l ${BREWUSER} -c \"brew update && brew upgrade\""
+{{- else if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") -}}
+{{-   if eq .chezmoi.osRelease.idLike "debian" -}}
+alias pu="sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y"
+{{-   else if eq .chezmoi.osRelease.idLike "arch" -}}
+alias pu="sudo pacman -Suy"
+{{-   else -}}
+{{- /* other Linux distro */ -}}
+{{-   end -}}
+{{- else -}}
+{{- /* other OS */ -}}
+{{- end }}
