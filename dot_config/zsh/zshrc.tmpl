@@ -201,7 +201,7 @@ function todo {
   case "${op}" in
     -h|--help)
       cat <<EOF
-todo -h|-l|-a|-c
+todo -h|-l|-a|-c|-b
   -h|--help:
     help
   -l|--list:
@@ -210,6 +210,8 @@ todo -h|-l|-a|-c
     create a TODO with following subject
   -c|--close ...:
     close TODO of the following number
+  -b|--browser:
+    open issues in the browser
 EOF
       return
       ;;
@@ -221,6 +223,10 @@ EOF
       ;;
     -c|--close)
       cmd="close $1"
+      ;;
+    -b|--browser)
+      {{ if eq .chezmoi.os "darwin" }}open{{else}}xdg-open{{end}} "https://github.com/${repo}/issues"
+      return
       ;;
     *)
       cmd="${op} $*"
