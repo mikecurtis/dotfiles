@@ -255,16 +255,24 @@ brew () {
 }
 {{- end }}
 
+function pu {
+echo "Checking for package upgrades..."
 {{ if eq .chezmoi.os "darwin" -}}
-alias pu="su -l ${BREWUSER} -c \"brew update && brew upgrade\""
+echo "Running brew..."
+su -l ${BREWUSER} -c "brew update && brew upgrade"
 {{- else if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") -}}
 {{-   if eq .chezmoi.osRelease.idLike "debian" -}}
-alias pu="sudo apt update -y && sudo apt upgrade -y && sudo apt autoremove -y"
+echo "Running apt..."
+sudo -i bash -c "apt update -y && apt upgrade -y && apt autoremove -y"
 {{-   else if eq .chezmoi.osRelease.idLike "arch" -}}
-alias pu="sudo pacman -Suy"
+echo "Running pacman..."
+sudo pacman -Suy
 {{-   else -}}
 {{- /* other Linux distro */ -}}
 {{-   end -}}
 {{- else -}}
 {{- /* other OS */ -}}
 {{- end }}
+}
+
+alias u="cmu && pu"
