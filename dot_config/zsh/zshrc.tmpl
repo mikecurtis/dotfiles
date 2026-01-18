@@ -81,12 +81,13 @@ function cmi {
 }
 
 # Auto-start the ssh agent and add default keys
-SSH_ENV="$HOME/.ssh/environment"
+mkdir -p "${HOME}/.ssh"
+SSH_ENV="${HOME}/.ssh/environment"
 
 function start_agent {
     echo "Initializing new SSH agent..."
     # Create an environment file with safe permissions
-    touch "$SSH_ENV"
+    touch "${SSH_ENV}"
     chmod 600 "${SSH_ENV}"
     # Start the agent and output the env variables to the file
     /usr/bin/ssh-agent | sed 's/^echo/#echo/' >> "${SSH_ENV}"
