@@ -7,8 +7,21 @@ export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${HOME}/.config}"
 export PATH="${PATH}:${HOME}/.local/bin"
 
 typeset -U path cdpath fpath manpath
+{{ if eq .chezmoi.os "darwin" -}}
+# The following paths may be managed by homebrew running as a separate user.
+# Exclude them from the initial compinit audit.  Then, then load compinit again
+# with these entries included and auditing disabled.
+local _original_fpath=(${fpath})
+fpath=(${fpath[@]:#/Applications/*})
 autoload -U compinit && compinit
+fpath=(${_original_fpath})
+unset _original_fpath
+compinit -u
+{{ else }}
+autoload -U compinit && compinit -u
+{{ end }}
 ZSH_AUTOSUGGEST_STRATEGY=(history)
+
 
 
 # History options should be set in .zshrc and after oh-my-zsh sourcing.
