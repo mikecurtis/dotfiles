@@ -86,7 +86,7 @@ alias -- cm='chezmoi'
 alias -- cmc='cd {{.chezmoi.sourceDir}}'
 alias -- cmd='chezmoi diff'
 alias -- cma='chezmoi apply -v'
-alias -- cmu='chezmoi update'
+alias -- cmu='chezmoi update -v'
 function cmi {
   cd {{.chezmoi.sourceDir}}
   local ignoreFile=".chezmoiignore"
@@ -94,6 +94,11 @@ function cmi {
   LC_COLLATE=C LC_ALL=C sort -u -o ${ignoreFile} ${ignoreFile}
   git diff ${ignoreFile}
 }
+
+alias -- mu='mise upgrade -y && mise prune -y'
+
+# TODO: Change to -otoml once support is more complete.
+alias -- tq='yq -oy'
 
 # Auto-start the ssh agent and add default keys
 mkdir -p "${HOME}/.ssh"
@@ -291,4 +296,4 @@ sudo pacman -Suy
 {{- end }}
 }
 
-alias u="cmu && pu"
+alias u="cmu && pu && mu"
