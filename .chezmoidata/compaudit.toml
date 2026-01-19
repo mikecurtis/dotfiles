@@ -1,0 +1,5 @@
+[chezmoidata.compaudit]
+allow = [
+  "/Applications/*",
+  "/usr/local/share/zsh/*",
+]

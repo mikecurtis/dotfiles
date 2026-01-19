@@ -12,7 +12,9 @@ typeset -U path cdpath fpath manpath
 # Exclude them from the initial compinit audit.  Then, then load compinit again
 # with these entries included and auditing disabled.
 local _original_fpath=(${fpath})
-fpath=(${fpath[@]:#/Applications/*})
+{{- range .chezmoidata.compaudit.allow }}
+fpath=(${fpath[@]:#{{.}}})
+{{- end }}
 autoload -U compinit && compinit
 fpath=(${_original_fpath})
 unset _original_fpath
