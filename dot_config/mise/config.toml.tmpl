@@ -21,3 +21,124 @@ postinstall = """
   tmux -c {{$tpmSourceDir}}/tpm &&
   tmux -c {{$tpmSourceDir}}/bindings/install_plugins
 """
+
+[shell_alias]
+la = "eza -a"
+ll = "eza -l"
+lla = "eza -la"
+ls = "eza"
+lt = "eza --tree"
+tm = "tmux list-sessions > /dev/null 2>&1 && tmux a || tmux"
+view = "nvim -R"
+vimdiff = "nvim -d%"
+cm = "chezmoi"
+cmc = "cd {{.chezmoi.sourceDir}}"
+cmd = "chezmoi diff"
+cma = "chezmoi apply -v"
+cmu = "chezmoi update -v"
+cmi = """() {
+  cd {{.chezmoi.sourceDir}}
+  local ignoreFile=".chezmoiignore"
+  chezmoi unmanaged >> ${ignoreFile}
+  LC_COLLATE=C LC_ALL=C sort -u -o ${ignoreFile} ${ignoreFile}
+  git diff ${ignoreFile}
+}"""
+mu = "mise upgrade -y && mise prune -y"
+# TODO: Change to -otoml once support is more complete.
+tq = "yq -oy"
+
+u = "cmu && pu && mu"
+
+# TODO list via github issues
+todo = """() {
+  local repo="${GITUSER}/TODO"
+  local op="--list"
+  if [ $# -gt 0 ]; then
+    op="$1"
+    shift
+  fi
+  local cmd=""
+  case "${op}" in
+    -h|--help)
+      cat <<EOF
+todo -h|-l|-a|-c|-b
+  -h|--help:
+    help
+  -l|--list:
+    list TODOs
+  -a|--add|--create ...:
+    create a TODO with following subject
+  -c|--close ...:
+    close TODO of the following number
+  -b|--browser:
+    open issues in the browser
+EOF
+      return
+      ;;
+    -l|--list)
+      cmd="list --limit 100"
+      ;;
+    -a|--add|--create)
+      cmd="create -b '' -t \"$*\""
+      ;;
+    -c|--close)
+      cmd="close $1"
+      ;;
+    -b|--browser)
+      {{ if eq .chezmoi.os "darwin" }}open{{else}}xdg-open{{end}} "https://github.com/${repo}/issues"
+      return
+      ;;
+    *)
+      cmd="${op} $*"
+      ;;
+  esac
+  eval gh -R "${repo}" issue ${cmd}
+}"""
+
+
+pu = """() {
+echo "Checking for package upgrades..."
+{{ if eq .chezmoi.os "darwin" -}}
+echo "Running brew..."
+su -l ${BREWUSER} -c "brew update && brew upgrade"
+{{- else if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") -}}
+{{-   if eq .chezmoi.osRelease.idLike "debian" -}}
+echo "Running apt..."
+sudo -i bash -c "apt update -y && apt upgrade -y && apt autoremove -y"
+{{-   else if eq .chezmoi.osRelease.idLike "arch" -}}
+echo "Running pacman..."
+sudo pacman -Suy
+{{-   else -}}
+{{- /* other Linux distro */ -}}
+{{-   end -}}
+{{- else -}}
+{{- /* other OS */ -}}
+{{- end }}
+}"""
+
+brew = """() {
+  case "$1" in
+    install|update|upgrade|uninstall)
+      echo "Switching user to ${BREWUSER} for brew..."
+      su -l ${BREWUSER} -c "brew $*"
+      ;;
+    *)
+      /opt/homebrew/bin/brew "$@"
+      ;;
+  esac
+}"""
+
+# ssh with tmux tunneling.  Should only be used on trusted destinations.
+tsh = """() {
+  [ "${TMUX}" ] || ( echo "No \\${TMUX} found" ; return 1 )
+  local localSocket="$(echo ${TMUX} | cut -d ',' -f1)"
+  local remoteSocket="/tmp/tmux.remote.$(date +'%s')"
+  local titleHint="$(tmux display-message -p '#{window_name}')"
+
+  ssh -t -R "${remoteSocket}:${localSocket}" "$@" \
+    "export TMUX=\\"${remoteSocket}\\"; \
+    export TMUX_TITLE_HINT="${titleHint}" ; \
+    export FROM_TSH=true ; \
+    trap \\"rm ${remoteSocket}\\" EXIT; \
+    exec \\$SHELL -l"
+}"""

@@ -3,6 +3,11 @@ export GITUSER="{{ template "gituser.tmpl" . }}"
 export HOME="{{ .chezmoi.homeDir }}"
 export HOSTNAME="{{ .chezmoi.hostname }}"
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${HOME}/.config}"
+{{ if eq .chezmoi.os "darwin" -}}
+# macos utilities
+export BREWUSER="{{ template "brewuser.tmpl" . }}"
+export HOMEBREW_NO_AUTO_UPDATE=1
+{{- end }}
 
 export PATH="${PATH}:${HOME}/.local/bin"
 
@@ -23,8 +28,6 @@ compinit -u
 autoload -U compinit && compinit
 {{ end }}
 ZSH_AUTOSUGGEST_STRATEGY=(history)
-
-
 
 # History options should be set in .zshrc and after oh-my-zsh sourcing.
 # See https://github.com/nix-community/home-manager/issues/177.
@@ -55,7 +58,6 @@ for opt in "${disabled_opts[@]}"; do
 done
 unset opt disabled_opts
 
-
 source <(mise activate zsh)
 
 if [[ $options[zle] = on ]]; then
@@ -72,33 +74,6 @@ export GH_CONFIG_DIR="${HOME}/.local/share/gh"
 if [ "$TERM" = "xterm-ghostty" ]; then
   infocmp -x xterm-ghostty > /dev/null 2>&1 || export TERM="xterm-256color"
 fi
-
-alias -- la='eza -a'
-alias -- ll='eza -l'
-alias -- lla='eza -la'
-alias -- ls=eza
-alias -- lt='eza --tree'
-alias -- tm='tmux list-sessions > /dev/null 2>&1 && tmux a || tmux'
-alias -- view='nvim -R'
-alias -- vimdiff='nvim -d'%
-
-alias -- cm='chezmoi'
-alias -- cmc='cd {{.chezmoi.sourceDir}}'
-alias -- cmd='chezmoi diff'
-alias -- cma='chezmoi apply -v'
-alias -- cmu='chezmoi update -v'
-function cmi {
-  cd {{.chezmoi.sourceDir}}
-  local ignoreFile=".chezmoiignore"
-  chezmoi unmanaged >> ${ignoreFile}
-  LC_COLLATE=C LC_ALL=C sort -u -o ${ignoreFile} ${ignoreFile}
-  git diff ${ignoreFile}
-}
-
-alias -- mu='mise upgrade -y && mise prune -y'
-
-# TODO: Change to -otoml once support is more complete.
-alias -- tq='yq -oy'
 
 # Auto-start the ssh agent and add default keys
 mkdir -p "${HOME}/.ssh"
@@ -126,25 +101,6 @@ if [ -f "${SSH_ENV}" ]; then
 else
     start_agent
 fi
-
-
-# ssh with tmux tunneling.  Should only be used on trusted destinations.
-function tsh {
-  [ "${TMUX}" ] || ( echo "No \${TMUX} found" ; return 1 )
-  local localSocket="$(echo $TMUX | cut -d ',' -f1)"
-  local remoteSocket="/tmp/tmux.remote.$(date +'%s')"
-  # Minor optimization.  See notes in .zshrc
-  local titleHint="$(tmux display-message -p '#{window_name}')"
-
-  # Note that \$SHELL is escaped to be evaluated in the remote environment.
-  ssh -t -R "${remoteSocket}:${localSocket}" "$@" \
-    "export TMUX=\"${remoteSocket}\"; \
-    export TMUX_TITLE_HINT="${titleHint}" ; \
-    export FROM_TSH=true ; \
-    trap \"rm ${remoteSocket}\" EXIT; \
-    exec \$SHELL -l"
-}
-
 
 # Set tmux window titles to match user, host, and (optionally) directory.
 # This must be done from within the shell because tmux only sees the parent
@@ -211,89 +167,3 @@ if [ "${TMUX}" ]; then
   bindkey '^Z' _ctrl_z_handler
 
 fi
-
-# TODO list via github issues
-function todo {
-  local repo="${GITUSER}/TODO"
-  local op="--list"
-  if [ $# -gt 0 ]; then
-    op="$1"
-    shift
-  fi
-  local cmd=""
-  case "${op}" in
-    -h|--help)
-      cat <<EOF
-todo -h|-l|-a|-c|-b
-  -h|--help:
-    help
-  -l|--list:
-    list TODOs
-  -a|--add|--create ...:
-    create a TODO with following subject
-  -c|--close ...:
-    close TODO of the following number
-  -b|--browser:
-    open issues in the browser
-EOF
-      return
-      ;;
-    -l|--list)
-      cmd="list --limit 100"
-      ;;
-    -a|--add|--create)
-      cmd="create -b '' -t \"$*\""
-      ;;
-    -c|--close)
-      cmd="close $1"
-      ;;
-    -b|--browser)
-      {{ if eq .chezmoi.os "darwin" }}open{{else}}xdg-open{{end}} "https://github.com/${repo}/issues"
-      return
-      ;;
-    *)
-      cmd="${op} $*"
-      ;;
-  esac
-  eval gh -R "${repo}" issue ${cmd}
-}
-
-{{ if eq .chezmoi.os "darwin" -}}
-# macos utilities
-export BREWUSER="{{ template "brewuser.tmpl" . }}"
-export HOMEBREW_NO_AUTO_UPDATE=1
-
-brew () {
-  case "$1" in
-    install|update|upgrade|uninstall)
-      echo "Switching user to ${BREWUSER} for brew..."
-      su -l ${BREWUSER} -c "brew $*"
-      ;;
-    *)
-      /opt/homebrew/bin/brew "$@"
-      ;;
-  esac
-}
-{{- end }}
-
-function pu {
-echo "Checking for package upgrades..."
-{{ if eq .chezmoi.os "darwin" -}}
-echo "Running brew..."
-su -l ${BREWUSER} -c "brew update && brew upgrade"
-{{- else if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") -}}
-{{-   if eq .chezmoi.osRelease.idLike "debian" -}}
-echo "Running apt..."
-sudo -i bash -c "apt update -y && apt upgrade -y && apt autoremove -y"
-{{-   else if eq .chezmoi.osRelease.idLike "arch" -}}
-echo "Running pacman..."
-sudo pacman -Suy
-{{-   else -}}
-{{- /* other Linux distro */ -}}
-{{-   end -}}
-{{- else -}}
-{{- /* other OS */ -}}
-{{- end }}
-}
-
-alias u="cmu && pu && mu"
