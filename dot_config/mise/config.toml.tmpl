@@ -23,14 +23,35 @@ postinstall = """
 """
 
 [shell_alias]
+
+################################################
+# base utilities
+################################################
 la = "eza -a"
 ll = "eza -l"
 lla = "eza -la"
 ls = "eza"
 lt = "eza --tree"
-tm = "tmux list-sessions > /dev/null 2>&1 && tmux a || tmux"
+# TODO: Change to -otoml once support is more complete.
+tq = "yq -oy"
+
+
+################################################
+# editor
+################################################
 view = "nvim -R"
 vimdiff = "nvim -d%"
+
+
+################################################
+# tmux
+################################################
+tm = "tmux list-sessions > /dev/null 2>&1 && tmux a || tmux"
+
+
+################################################
+# chezmoi
+################################################
 cm = "chezmoi"
 cmc = "cd {{.chezmoi.sourceDir}}"
 cmd = "chezmoi diff"
@@ -43,13 +64,54 @@ cmi = """() {
   LC_COLLATE=C LC_ALL=C sort -u -o ${ignoreFile} ${ignoreFile}
   git diff ${ignoreFile}
 }"""
-mu = "mise upgrade -y && mise prune -y"
-# TODO: Change to -otoml once support is more complete.
-tq = "yq -oy"
 
+
+################################################
+# Package management
+################################################
+{{ if eq .chezmoi.os "darwin" -}}
+# brew helper for mac (brew runs as a separate user)
+brew = """() {
+  case "$1" in
+    install|update|upgrade|uninstall)
+      echo "Switching user to ${BREWUSER} for brew..."
+      su -l ${BREWUSER} -c "brew $*"
+      ;;
+    *)
+      /opt/homebrew/bin/brew "$@"
+      ;;
+  esac
+}"""
+{{ end }}
+
+# cross-platform native package update alias
+pu = """() {
+echo "Checking for package upgrades..."
+{{ if eq .chezmoi.os "darwin" -}}
+echo "Running brew..."
+su -l ${BREWUSER} -c "brew update && brew upgrade"
+{{- else if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") -}}
+{{-   if eq .chezmoi.osRelease.idLike "debian" -}}
+echo "Running apt..."
+sudo -i bash -c "apt update -y && apt upgrade -y && apt autoremove -y"
+{{-   else if eq .chezmoi.osRelease.idLike "arch" -}}
+echo "Running pacman..."
+sudo pacman -Suy
+{{-   else -}}
+{{- /* other Linux distro */ -}}
+{{-   end -}}
+{{- else -}}
+{{- /* other OS */ -}}
+{{- end }}
+}"""
+
+mu = "mise upgrade -y && mise prune -y"
 u = "cmu && pu && mu"
 
-# TODO list via github issues
+
+################################################
+# TODO list (via github issues)
+################################################
 todo = """() {
   local repo="${GITUSER}/TODO"
   local op="--list"
@@ -96,41 +158,10 @@ EOF
 }"""
 
 
-pu = """() {
-echo "Checking for package upgrades..."
-{{ if eq .chezmoi.os "darwin" -}}
-echo "Running brew..."
-su -l ${BREWUSER} -c "brew update && brew upgrade"
-{{- else if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") -}}
-{{-   if eq .chezmoi.osRelease.idLike "debian" -}}
-echo "Running apt..."
-sudo -i bash -c "apt update -y && apt upgrade -y && apt autoremove -y"
-{{-   else if eq .chezmoi.osRelease.idLike "arch" -}}
-echo "Running pacman..."
-sudo pacman -Suy
-{{-   else -}}
-{{- /* other Linux distro */ -}}
-{{-   end -}}
-{{- else -}}
-{{- /* other OS */ -}}
-{{- end }}
-}"""
-
-{{ if eq .chezmoi.os "darwin" -}}
-brew = """() {
-  case "$1" in
-    install|update|upgrade|uninstall)
-      echo "Switching user to ${BREWUSER} for brew..."
-      su -l ${BREWUSER} -c "brew $*"
-      ;;
-    *)
-      /opt/homebrew/bin/brew "$@"
-      ;;
-  esac
-}"""
-{{ end }}
-
-# ssh with tmux tunneling.  Should only be used on trusted destinations.
+################################################
+# ssh with tmux tunneling.
+# Should only be used on trusted destinations.
+################################################
 tsh = """() {
   [ "${TMUX}" ] || ( echo "No \\${TMUX} found" ; return 1 )
   local localSocket="$(echo ${TMUX} | cut -d ',' -f1)"
