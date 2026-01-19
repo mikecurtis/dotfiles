@@ -128,7 +128,7 @@ chsh_zsh () {
 
 bootstrap_chezmoi () {
   mise use -g chezmoi || fail "chezmoi install failed"
-  mise exec chezmoi -- chezmoi init ${REPO} || fail "could not init chezmoi"
+  mise exec chezmoi -- chezmoi init -v ${REPO} || fail "could not init chezmoi"
   cmDir="${HOME}/.config/chezmoi"
   cmData="${cmDir}/chezmoi.toml"
   if ! [ -f $"${cmData}" ]; then
@@ -141,7 +141,7 @@ gituser = "${USER}"
 [data.chezmoidata.local]
 EOF
   fi
-  mise exec chezmoi -- chezmoi apply || fail "could not apply chezmoi"
+  mise exec chezmoi -- chezmoi apply -v || fail "could not apply chezmoi"
   mise install
 }
 
