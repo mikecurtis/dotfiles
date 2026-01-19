@@ -148,7 +148,6 @@ EOF
 [ "${OS}" = "arch" ] && install base-devel
 check_install curl
 check_install git
-check_install jq
 check_install zsh
 check_install_mise
 chsh_zsh
