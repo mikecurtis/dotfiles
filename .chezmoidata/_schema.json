@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "brewuser": null,
+    "gituser": null,
+    "brew": {
+      "brews": [],
+      "casks": []
+    },
+    "compaudit": {
+      "allow": []
+    },
+    "local": {
+      "brew": {
+        "brews": [],
+        "casks": []
+      },
+      "compaudit": {
+        "allow": []
+      }
+    }
+  },
+  "additionalProperties": false
+}

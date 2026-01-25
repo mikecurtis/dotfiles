@@ -1,0 +1,13 @@
+#!{{ lookPath "sh" }}
+
+set -ex
+
+# {{.chezmoi.configFile}}: {{ include .chezmoi.configFile | sha256sum }}
+{{ $schemaFile := joinPath .chezmoi.commandDir ".chezmoidata/_schema.json" }}
+dataFile="$(mktemp)"
+
+chezmoi data | jq .chezmoidata > ${dataFile}
+
+jsonschema validate {{$schemaFile}} ${dataFile}
+
+echo "Passed!"
