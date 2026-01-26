@@ -7,17 +7,24 @@ fzf = "latest"
 github-cli = "latest"
 jq = "latest"
 jsonschema = "latest"
-neovim = "latest"
 ripgrep = "latest"
 starship = "latest"
 yq = "latest"
+
+[tools.neovim]
+version = "latest"
+postinstall = """(
+  source <(mise activate zsh)
+  setopt LOCAL_OPTIONS XTRACE
+  nvim --headless "+Lazy! sync" +qa
+)"""
 
 [tools.tmux]
 version = "latest"
 {{ $tpmSourceDir := joinPath .chezmoi.homeDir ".local/share/tpm" }}
 postinstall = """(
-  setopt LOCAL_OPTIONS XTRACE
   source <(mise activate zsh)
+  setopt LOCAL_OPTIONS XTRACE
   if ! [ -d {{$tpmSourceDir}} ]; then
     mkdir -p {{$tpmSourceDir}}
     git clone https://github.com/tmux-plugins/tpm {{$tpmSourceDir}}
@@ -43,6 +50,9 @@ tq = "yq -oy"
 ################################################
 # editor
 ################################################
+v = "nvim"
+vi = "nvim"
+vim = "nvim"
 view = "nvim -R"
 vimdiff = "nvim -d%"
 
