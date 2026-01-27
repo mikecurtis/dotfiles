@@ -1,7 +1,7 @@
 # Brew file
-{{- range sortAlpha (concat .chezmoidata.brew.brews .chezmoidata.local.brew.brews) -}}
+{{ range sortAlpha (concat .chezmoidata.brew.brews .chezmoidata.local.brew.brews) -}}
 brew {{ . | quote }}
 {{ end -}}
-{{- range sortAlpha (concat .chezmoidata.brew.casks .chezmoidata.local.brew.casks) -}}
+{{ range sortAlpha (concat .chezmoidata.brew.casks .chezmoidata.local.brew.casks) -}}
 cask {{ . | quote }}
 {{ end }}
