@@ -248,7 +248,13 @@ plugins {
         welcome_screen true
     }
 }
+
+ui {
+    pane_frames {
+	hide_session_name true
+    }
+}
+
 theme "dracula"
-session_name "home"
 attach_to_session true
 show_startup_tips false
