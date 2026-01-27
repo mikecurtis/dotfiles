@@ -75,6 +75,7 @@ cm = "chezmoi"
 cmc = "cd {{.chezmoi.sourceDir}}"
 cmd = "chezmoi diff"
 cma = "chezmoi apply -v"
+cme = "$EDITOR {{.chezmoi.configFile}}"
 cmu = "chezmoi update -v"
 cmi = """() {(
   setopt LOCAL_OPTIONS ERREXIT
