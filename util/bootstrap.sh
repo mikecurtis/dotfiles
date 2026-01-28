@@ -131,12 +131,16 @@ bootstrap_chezmoi () {
   mise exec chezmoi -- chezmoi init -v ${REPO} || fail "could not init chezmoi"
   cmDir="${HOME}/.config/chezmoi"
   cmData="${cmDir}/chezmoi.toml"
+  local brewline=
+  if [ "{OS}" = "macos" ]; then
+    brewline="brewuser = \"\${BREWUSER}\""
+  fi
   if ! [ -f $"${cmData}" ]; then
     mkdir -p ${cmDir}
     cat > ${cmData} <<EOF
 [data.chezmoidata]
-brewuser = "${BREWUSER}"
 gituser = "${USER}"
+${brewline}
 
 [data.chezmoidata.local]
 EOF
