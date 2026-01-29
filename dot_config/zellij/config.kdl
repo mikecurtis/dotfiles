@@ -138,6 +138,10 @@ keybinds clear-defaults=true {
         bind "Ctrl down" { MoveFocus "down"; }
         bind "Ctrl up" { MoveFocus "up"; }
         bind "Ctrl right" { MoveFocus "right"; }
+        bind "Ctrl Shift left" { Resize "Increase left"; }
+        bind "Ctrl Shift down" { Resize "Increase down"; }
+        bind "Ctrl Shift up" { Resize "Increase up"; }
+        bind "Ctrl Shift right" { Resize "Increase right"; }
         bind "Ctrl g" { SwitchToMode "locked"; }
         bind "Ctrl n" { NewPane; }
         bind "Ctrl q" { Quit; }
