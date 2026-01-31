@@ -23,20 +23,6 @@ postinstall = """(
   nvim --headless "+Lazy! sync" +qa
 )"""
 
-[tools.tmux]
-version = "latest"
-{{ $tpmSourceDir := joinPath .chezmoi.homeDir ".local/share/tpm" }}
-postinstall = """(
-  source <(mise activate zsh)
-  setopt LOCAL_OPTIONS XTRACE
-  if ! [ -d {{$tpmSourceDir}} ]; then
-    mkdir -p {{$tpmSourceDir}}
-    git clone https://github.com/tmux-plugins/tpm {{$tpmSourceDir}}
-  fi
-  tmux -c {{$tpmSourceDir}}/tpm
-  tmux -c {{$tpmSourceDir}}/bindings/install_plugins
-)"""
-
 [shell_alias]
 
 ################################################
@@ -59,13 +45,6 @@ vi = "nvim"
 vim = "nvim"
 view = "nvim -R"
 vimdiff = "nvim -d%"
-
-
-################################################
-# tmux
-################################################
-tm = "tmux list-sessions > /dev/null 2>&1 && tmux a || tmux"
-tpmu = "git -C {{$tpmSourceDir}} pull && tmux -c {{$tpmSourceDir}}/bindings/install_plugins"
 
 
 ################################################
@@ -125,7 +104,7 @@ pu = """() {(
 
 mu = "mise upgrade -y && mise prune -y"
 
-u = "cmu && pu && mu && tpmu"
+u = "cmu && pu && mu "
 
 
 ################################################
@@ -175,24 +154,4 @@ EOF
       ;;
   esac
   eval gh -R "${repo}" issue ${cmd}
-)}"""
-
-
-################################################
-# ssh with tmux tunneling.
-# Should only be used on trusted destinations.
-################################################
-tsh = """() {(
-  setopt LOCAL_OPTIONS ERREXIT XTRACE
-  [ "${TMUX}" ] || ( echo "No \\${TMUX} found" ; return 1 )
-  local localSocket="$(echo ${TMUX} | cut -d ',' -f1)"
-  local remoteSocket="/tmp/tmux.remote.$(date +'%s')"
-  local titleHint="$(tmux display-message -p '#{window_name}')"
-
-  ssh -t -R "${remoteSocket}:${localSocket}" "$@" \
-    "export TMUX=\\"${remoteSocket}\\"; \
-    export TMUX_TITLE_HINT="${titleHint}" ; \
-    export FROM_TSH=true ; \
-    trap \\"rm ${remoteSocket}\\" EXIT; \
-    exec \\$SHELL -l"
 )}"""
