@@ -144,6 +144,7 @@ keybinds clear-defaults=true {
         bind "Ctrl Shift right" { Resize "Increase right"; }
         bind "Ctrl g" { SwitchToMode "locked"; }
         bind "Ctrl n" { NewPane; }
+        bind "Ctrl f" { ToggleFocusFullscreen; }
         bind "Ctrl q" { Quit; }
         bind "Ctrl PageUp" { GoToPreviousTab; }
         bind "Ctrl PageDown" { GoToNextTab; }
