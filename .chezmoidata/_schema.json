@@ -2,8 +2,8 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
-    "brewuser": null,
-    "gituser": null,
+    "brewuser": {"type": "string"},
+    "gituser": {"type": "string"},
     "brew": {
       "brews": [],
       "casks": []
