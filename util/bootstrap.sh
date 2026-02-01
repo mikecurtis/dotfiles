@@ -145,6 +145,8 @@ ${brewline}
 [data.chezmoidata.local]
 EOF
   fi
+  # jsonschema is used for validating chezmoi data
+  mise install jsonschema
   mise exec chezmoi -- chezmoi apply -v || fail "could not apply chezmoi"
   mise install
 }
