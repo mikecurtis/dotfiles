@@ -75,7 +75,7 @@ brew = """() {
   case "$1" in
     install|update|upgrade|uninstall)
       echo "Switching user to ${BREWUSER} for brew..."
-      su -l ${BREWUSER} -c "brew $*"
+      sudo -i -u ${BREWUSER} sh -c "brew $*"
       ;;
     *)
       /opt/homebrew/bin/brew "$@"
@@ -88,7 +88,7 @@ brew = """() {
 pu = """() {(
   setopt LOCAL_OPTIONS ERREXIT XTRACE
 {{ if eq .chezmoi.os "darwin" -}}
-  su -l ${BREWUSER} -c "HOMEBREW_NO_AUTO_UPDATE=0 NONINTERACTIVE=1 brew upgrade"
+  sudo -i -u "${BREWUSER}" sh -c "HOMEBREW_NO_AUTO_UPDATE=0 NONINTERACTIVE=1 brew upgrade"
 {{- else if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") -}}
 {{-   if eq .chezmoi.osRelease.idLike "debian" -}}
   sudo -i bash -c "apt update -y && apt upgrade -y && apt autoremove -y"

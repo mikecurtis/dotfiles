@@ -75,7 +75,7 @@ install () {
     ;;
   macos)
     if [ "${BREWUSER}" ]; then
-      su -l ${BREWUSER} -c "brew update && brew install $*" ||
+      sudo -i -u ${BREWUSER} sh -c "brew update && brew install $*" ||
         fail "brew install failed"
     else
       brew update &&
