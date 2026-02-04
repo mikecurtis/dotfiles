@@ -4,6 +4,7 @@ export HOME="{{ .chezmoi.homeDir }}"
 export HOSTNAME="{{ .chezmoi.hostname }}"
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${HOME}/.config}"
 export EDITOR="nvim"
+bindkey -e
 {{ if eq .chezmoi.os "darwin" -}}
 # macos utilities
 export BREWUSER="{{ template "brewuser.tmpl" . }}"
