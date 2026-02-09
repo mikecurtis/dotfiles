@@ -30,8 +30,12 @@ keybinds clear-defaults=true {
         bind "Ctrl 7" { GoToTab 7; SwitchToMode "normal"; }
         bind "Ctrl 8" { GoToTab 8; SwitchToMode "normal"; }
         bind "Ctrl 9" { GoToTab 9; SwitchToMode "normal"; }
+
+	// TODO: Have alternate non-mac bindings?
         bind "Ctrl PageUp" { GoToPreviousTab; }
+        bind "Alt Super Left" { GoToPreviousTab; }
         bind "Ctrl PageDown" { GoToNextTab; }
+        bind "Alt Super Right" { GoToNextTab; }
     }
     shared_except "session" {
         bind "Ctrl l" { SwitchToMode "session"; }

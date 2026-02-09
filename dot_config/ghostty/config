@@ -10,3 +10,15 @@ theme = "Firefly Traditional"
 window-save-state = always
 split-divider-color = "#fe1ce5"
 maximize = true
+keybind = super+arrow_left=unbind
+keybind = super+ctrl+arrow_left=unbind
+keybind = super+alt+arrow_left=unbind
+keybind = super+arrow_right=unbind
+keybind = super+ctrl+arrow_right=unbind
+keybind = super+alt+arrow_right=unbind
+keybind = super+arrow_up=unbind
+keybind = super+ctrl+arrow_up=unbind
+keybind = super+alt+arrow_up=unbind
+keybind = super+arrow_down=unbind
+keybind = super+ctrl+arrow_down=unbind
+keybind = super+alt+arrow_down=unbind
