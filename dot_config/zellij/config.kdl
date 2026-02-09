@@ -36,6 +36,9 @@ keybinds clear-defaults=true {
         bind "Alt Super Left" { GoToPreviousTab; }
         bind "Ctrl PageDown" { GoToNextTab; }
         bind "Alt Super Right" { GoToNextTab; }
+
+	bind "Ctrl Shift p" { SwitchToMode "renamepane"; PaneNameInput 0; }
+        bind "Ctrl Shift t" { SwitchToMode "renametab"; TabNameInput 0; }
     }
     shared_except "session" {
         bind "Ctrl l" { SwitchToMode "session"; }
@@ -53,6 +56,14 @@ keybinds clear-defaults=true {
         bind "o" { SearchToggleOption "WholeWord"; }
         bind "p" { Search "up"; }
         bind "w" { SearchToggleOption "Wrap"; }
+    }
+    renametab {
+        bind "esc" { UndoRenameTab; SwitchToMode "normal"; }
+        bind "Ctrl c" { UndoRenameTab; SwitchToMode "normal"; }
+    }
+    renamepane {
+        bind "esc" { UndoRenamePane; SwitchToMode "normal"; }
+        bind "Ctrl c" { UndoRenamePane; SwitchToMode "normal"; }
     }
     session {
         bind "a" {
@@ -95,8 +106,9 @@ keybinds clear-defaults=true {
     shared_except "normal" "entersearch" {
         bind "enter" { SwitchToMode "normal"; }
     }
-    shared_except "normal" "entersearch" {
+    shared_except "normal" "entersearch" "renametab" "renamepane" {
         bind "esc" { SwitchToMode "normal"; }
+        bind "Ctrl c" { SwitchToMode "normal"; }
     }
     shared_among "scroll" "search" {
         bind "PageDown" { PageScrollDown; }
