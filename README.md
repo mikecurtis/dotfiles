@@ -3,7 +3,7 @@ Installation
 
 
 ```
-sh <(curl -Lf chet.cat/boot)
+bash <(curl -Lf chet.cat/boot)
 ```
 
 
