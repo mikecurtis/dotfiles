@@ -159,12 +159,13 @@ EOF
     sudo chmod 755 "${machLocalDir}"
     sudo touch "${machLocalData}"
     sudo chmod 666 "${machLocalData}"
-    cat > "${machLocalData}" <<EOF
+    sudo cat > "${machLocalData}" <<EOF
 [data.chezmoidata.machlocal]
 compaudit.allow = []
 ${brewsLine}
 EOF
   fi
+    sudo chmod 644 "${machLocalData}"
 
   mise exec chezmoi -- chezmoi init -v ${REPO} || fail "could not init chezmoi"
   # jsonschema is used for validating chezmoi data
