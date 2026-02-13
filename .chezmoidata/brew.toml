@@ -1,4 +1,4 @@
-# Define additional packages in .data.chezmoidata.local.brew in chezmoi.toml
+# Define additional packages in chezmoidata.machlocal.brew
 
 [chezmoidata.brew]
 brews = [

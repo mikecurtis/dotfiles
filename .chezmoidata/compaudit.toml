@@ -1,4 +1,4 @@
-# Define additional allow patterns in .data.chezmoidata.local.compaudit in chezmoi.toml
+# Define additional allow patterns in chezmoidata.machlocal.compaudit
 
 [chezmoidata.compaudit]
 allow = [

@@ -1,6 +1,6 @@
 {{- /* This deletes an empty string before the template */ -}}
-{{ if ne .chezmoidata.brewuser "" }}
-  {{- .chezmoidata.brewuser -}}
+{{ if ne .chezmoidata.userlocal.brewuser "" }}
+  {{- .chezmoidata.userlocal.brewuser -}}
 {{ else }}
   {{- .chezmoi.username -}}
 {{ end }}

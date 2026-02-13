@@ -2,8 +2,6 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
-    "brewuser": {"type": "string"},
-    "gituser": {"type": "string"},
     "brew": {
       "brews": [],
       "casks": []
@@ -11,16 +9,20 @@
     "compaudit": {
       "allow": []
     },
-    "local": {
-      "brew": {
-        "brews": [],
-        "casks": []
-      },
+    "userlocal": {
+      "gituser": {"type": "string"},
+      "brewuser": {"type": "string"},
+      "mise": {
+        "tools": {}
+      }
+    },
+    "machlocal": {
       "compaudit": {
         "allow": []
       },
-      "mise": {
-        "tools": {}
+      "brew": {
+        "brews": [],
+        "casks": []
       }
     }
   },

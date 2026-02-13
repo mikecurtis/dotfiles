@@ -11,7 +11,7 @@ ripgrep = "latest"
 starship = "latest"
 yq = "latest"
 zellij = "latest"
-{{- range $key, $val := .chezmoidata.local.mise.tools }}
+{{- range $key, $val := .chezmoidata.userlocal.mise.tools }}
 {{$key}} = {{$val | toToml}}
 {{- end }}
 
@@ -53,8 +53,9 @@ vimdiff = "nvim -d%"
 cm = "chezmoi"
 cmc = "cd {{.chezmoi.sourceDir}}"
 cmd = "chezmoi diff"
-cma = "chezmoi apply -v"
-cme = "$EDITOR {{.chezmoi.configFile}}"
+cma = "chezmoi init --apply -v"
+cmeu = "$EDITOR ${HOME}/.config/chezmoi/chezmoi.userlocal.toml"
+cmem = "$EDITOR /var/lib/chezmoi/chezmoi.machlocal.toml"
 cmu = "chezmoi update -v"
 cmi = """() {(
   setopt LOCAL_OPTIONS ERREXIT

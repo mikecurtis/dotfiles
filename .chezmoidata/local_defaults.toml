@@ -1,9 +1,7 @@
-[chezmoidata.local.brew]
-brews = []
-casks = []
+[chezmoidata.userlocal]
+mise.tools = {}
 
-[chezmoidata.local.compaudit]
-allow = []
-
-[chezmoidata.local.mise]
-tools = {}
+[chezmoidata.machlocal]
+compaudit.allow = []
+brew.brews = []
+brew.casks = []

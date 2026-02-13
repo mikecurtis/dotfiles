@@ -17,14 +17,11 @@ The file _schema.json provides default values for what should appear in `chezmoi
 The "chezmoidata" section should be populated programatically by files in
 .chezmoidata/ that are part of the git repo and span across machines.
 
-Machine-local settings (not git backed) can be provided in 
-~/.config/chezmoi/chezmoi.toml
+Machine-local user settings (not git backed) can be provided in 
+~/.config/chezmoi/chezmoi.userlocal.toml
 
-That file may override global settings by configuring
-[data.chezmoidata]
-
-It can also append values to global lists by configuring
-[data.chezmoidata.local]
+Machine-local system-wide settings (not git backed) can be provided in 
+/var/lib/chezmoi/chezmoi.machlocal.toml
 
 Clients of this schema are responsible for merging values from the top-level
 and from the local section.

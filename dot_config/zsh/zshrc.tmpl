@@ -19,7 +19,7 @@ typeset -U path cdpath fpath manpath
 # Exclude them from the initial compinit audit.  Then, then load compinit again
 # with these entries included and auditing disabled.
 local _original_fpath=(${fpath})
-{{- range sortAlpha (concat .chezmoidata.compaudit.allow .chezmoidata.local.compaudit.allow) }}
+{{- range sortAlpha (concat .chezmoidata.compaudit.allow .chezmoidata.machlocal.compaudit.allow) }}
 fpath=(${fpath[@]:#{{.}}})
 {{- end }}
 autoload -U compinit && compinit
@@ -105,7 +105,7 @@ else
 fi
 
 
-{{ if hasKey .chezmoidata.local.mise.tools "pnpm" }}
+{{ if hasKey .chezmoidata.userlocal.mise.tools "pnpm" }}
 # pnpm
 {{ if eq .chezmoi.os "darwin" }}
 export PNPM_HOME="${HOME}/Library/pnpm"

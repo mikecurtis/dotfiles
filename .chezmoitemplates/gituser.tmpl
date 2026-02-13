@@ -1,6 +1,6 @@
 {{- /* This deletes an empty string before the template */ -}}
-{{ if ne .chezmoidata.gituser "" }}
-  {{- .chezmoidata.gituser -}}
+{{ if ne .chezmoidata.userlocal.gituser "" }}
+  {{- .chezmoidata.userlocal.gituser -}}
 {{ else }}
   {{- .chezmoi.username -}}
 {{ end }}
