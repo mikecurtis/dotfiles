@@ -105,7 +105,7 @@ pu = """() {(
 
 mu = "mise upgrade -y && mise prune -y"
 
-u = "cmu && pu && mu "
+u = "cmc && git pull && ./util/bootstrap.sh && cmu && pu && mu"
 
 
 ################################################
