@@ -9,6 +9,7 @@
 .profile
 .ssh
 .viminfo
+.zshrc
 README.md
 src
 util

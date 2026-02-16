@@ -124,6 +124,12 @@ chsh_zsh () {
       chsh -s ${bin} || fail "Failed to chsh"
     fi
   fi
+  local rcFile="${HOME}/.zshrc"
+  if ! [ -f "${rcFile}" ]; then
+    cat > "${rcFile}" <<EOF
+source "${HOME}/.config/zsh/zshrc"
+EOF
+  fi
 }
 
 bootstrap_chezmoi () {
