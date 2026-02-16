@@ -170,8 +170,8 @@ EOF
 compaudit.allow = []
 ${brewsLine}
 EOF
-  fi
     sudo chmod 644 "${machLocalData}"
+  fi
 
   mise exec chezmoi -- chezmoi init -v ${REPO} || fail "could not init chezmoi"
   # jsonschema is used for validating chezmoi data
