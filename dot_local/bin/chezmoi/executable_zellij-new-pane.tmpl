@@ -1,0 +1,35 @@
+#!/bin/bash
+
+[ "${USER}" ] || (echo "No \${USER} set!"; exit 1)
+[ "${HOSTNAME}" ] || (echo "No \${HOSTNAME} set!"; exit 1)
+[ "${PWD}" ] || (echo "No \${PWD} set!"; exit 1)
+
+target="$(pbpaste)"
+user=
+hostname=
+dir=
+
+if [[ "${target}" == zellij-tab:* ]]; then
+  buffer="${target#zellij-tab:}"
+  user="${buffer%@*}"
+  buffer="${buffer#*@}"
+  hostname="${buffer%:*}"
+  dir="${buffer#*:}"
+else
+  zellij action rename-pane "${USER}@${HOSTNAME}#${ZELLIJ_PANE_ID}" &
+  exec "${SHELL}"
+fi
+
+[ "${user}" ] || user="${USER}"
+[ "${hostname}" ] || user="${HOSTNAME}"
+[ "${dir}" ] || user="${PWD}"
+
+zellij action rename-pane "${USER}@${HOSTNAME}#${ZELLIJ_PANE_ID}" &
+
+if [ "${hostname}" != "${HOSTNAME}" ]; then
+  exec ssh ${user}@${hostname} -t "cd ${dir} && exec \${SHELL}"
+elif [ "${user}" != "${USER}" ]; then
+  exec sudo -i -u "${user}" -D "${dir}"
+else
+  exec "${SHELL}"
+fi

@@ -1,9 +1,22 @@
 keybinds clear-defaults=true {
     shared {
+
+        bind "Ctrl n" {
+            Run "bash" "-c" "zellij-new-pane" {
+		floating false
+                close_on_exit true
+            }
+        }
+        bind "Ctrl Shift n" {
+            Run "bash" "-c" "zellij-new-pane" {
+		floating false
+                close_on_exit true
+		stacked true
+            }
+        }
+
 	// Misc
 	bind "Ctrl /" { NextSwapLayout; }
-        bind "Ctrl n" { NewPane; }
-        bind "Ctrl Shift n" { NewPane "stacked"; }
         bind "Ctrl f" { ToggleFocusFullscreen; }
         bind "Ctrl Shift d" { Detach; }
 
