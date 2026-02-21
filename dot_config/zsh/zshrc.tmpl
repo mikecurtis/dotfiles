@@ -12,6 +12,7 @@ export HOMEBREW_NO_AUTO_UPDATE=1
 {{- end }}
 
 export PATH="${PATH}:${HOME}/.local/bin"
+export PATH="${PATH}:${HOME}/.local/bin/chezmoi"
 
 typeset -U path cdpath fpath manpath
 {{ if eq .chezmoi.os "darwin" -}}

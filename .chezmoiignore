@@ -5,7 +5,11 @@
 .config/chezmoi/chezmoistate.boltdb
 .config/gh
 .lesshst
-.local
+.local/*
+!.local
+!.local/bin
+!.local/bin/chezmoi
+!.local/bin/chezmoi/*
 .profile
 .ssh
 .viminfo

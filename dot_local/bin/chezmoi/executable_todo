@@ -1,0 +1,48 @@
+#!/bin/bash
+
+set -e
+
+repo="${GITUSER}/TODO"
+op="--list"
+if [ $# -gt 0 ]; then
+  op="$1"
+  shift
+fi
+
+cmd=""
+case "${op}" in
+  -h|--help)
+    cat <<EOF
+todo -h|-l|-a|-c|-b
+-h|--help:
+  help
+-l|--list:
+  list TODOs
+-a|--add|--create ...:
+  create a TODO with following subject
+-c|--close ...:
+  close TODO of the following number
+-b|--browser:
+  open issues in the browser
+EOF
+    return
+    ;;
+  -l|--list)
+    cmd="list --limit 100"
+    ;;
+  -a|--add|--create)
+    cmd="create -b '' -t \\"$*\\""
+    ;;
+  -c|--close)
+    cmd="close $1"
+    ;;
+  -b|--browser)
+    {{ if eq .chezmoi.os "darwin" }}open{{else}}xdg-open{{end}} "https://github.com/${repo}/issues"
+    return
+    ;;
+  *)
+    cmd="${op} $*"
+    ;;
+esac
+
+exec gh -R "${repo}" issue ${cmd}
