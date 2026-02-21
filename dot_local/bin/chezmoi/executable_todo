@@ -37,7 +37,7 @@ todo -h|-l|-a|-c|-b
 -b|--browser:
   open issues in the browser
 EOF
-    return
+    exit 0
     ;;
   -l|--list)
     cmd="list --limit 100"
@@ -50,7 +50,7 @@ EOF
     ;;
   -b|--browser)
     {{ if eq .chezmoi.os "darwin" }}open{{else}}xdg-open{{end}} "https://github.com/${repo}/issues"
-    return
+    exit 0
     ;;
   *)
     cmd="${op} $*"
