@@ -1,8 +1,20 @@
 #!/bin/bash
 
+repo="$(gh repo set-default --view 2>/dev/null)"
+if [ "$?" = "0" ]; then
+  if [ "${repo}" = "" ]; then
+    gh repo set-default
+    repo="$(gh repo set-default --view 2>/dev/null)"
+    [ "${repo}" ] || (echo "could not determine repo" ; exit 1)
+  fi
+else
+  repo="${GITUSER}/TODO"
+fi
+
 set -e
 
-repo="${GITUSER}/TODO"
+[ "${GITUSER}" ] || (echo "no GITUSER" ; exit 1)
+
 op="--list"
 if [ $# -gt 0 ]; then
   op="$1"
