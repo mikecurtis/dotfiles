@@ -4,7 +4,11 @@
 [ "${HOSTNAME}" ] || (echo "No \${HOSTNAME} set!"; exit 1)
 [ "${PWD}" ] || (echo "No \${PWD} set!"; exit 1)
 
+{{ if eq .chezmoi.os "darwin" }}
 target="$(pbpaste)"
+{{ else }}
+target="$(xsel --clipboard --output)"
+{{ end }}
 user=
 hostname=
 dir=
