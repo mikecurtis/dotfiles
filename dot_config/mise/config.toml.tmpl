@@ -17,11 +17,12 @@ zellij = "latest"
 
 [tools.neovim]
 version = "latest"
-postinstall = """(
+postinstall = """zsh -c \"(
   source <(mise activate zsh)
   setopt LOCAL_OPTIONS XTRACE
-  nvim --headless "+Lazy! sync" +qa
-)"""
+  nvim --headless '+Lazy! sync' +qa
+)\"
+"""
 
 [shell_alias]
 
