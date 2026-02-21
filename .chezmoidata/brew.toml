@@ -2,6 +2,7 @@
 
 [chezmoidata.brew]
 brews = [
+  "mise",
 ]
 casks = [
 ]
