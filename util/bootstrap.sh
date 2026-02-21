@@ -14,6 +14,9 @@ fail () {
 if [ -f /etc/os-release ]; then
   . /etc/os-release
   case "${ID}" in
+  amzn)
+    OS="fedora"
+    ;;
   arch | archarm)
     OS="arch"
     ;;
@@ -68,6 +71,11 @@ install () {
     sudo pacman --noconfirm --needed -Suy $* ||
       fail "${installer} install failed"
     ;;
+  fedora)
+    sudo dnf update -y &&
+      sudo dnf install -y $* ||
+      fail "dnf install failed"
+    ;;
   ubuntu)
     sudo apt update -y &&
       sudo apt install -y $* ||
@@ -99,12 +107,21 @@ check_install () {
 
 check_install_mise () {
   if ! check_which mise; then
-    if [ "${OS}" = "ubuntu" ]; then
+    case "${OS}" in
+    ubuntu)
       sudo install -dm 755 /etc/apt/keyrings
       curl -fSs https://mise.jdx.dev/gpg-key.pub | sudo gpg --dearmor -o /etc/apt/keyrings/mise-archive-keyring.gpg
       echo "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.gpg arch=amd64] https://mise.jdx.dev/deb stable main" | sudo tee /etc/apt/sources.list.d/mise.list
-    fi
-    check_install mise
+      check_install mise
+      ;;
+    macos)
+      check_install mise
+      ;;
+    *)
+      curl https://mise.run | sh
+      check_which mise || fail "No mise found!"
+      ;;
+    esac
   fi
 }
 
@@ -118,6 +135,10 @@ chsh_zsh () {
   if [ "${shell}" != "zsh" ]; then
     bin="$(grep zsh /etc/shells | head -1)"
     [ "${bin}" ] || die "Could not find zsh in /etc/shells"
+    # chsh not installed by default.
+    if [ "${OS}" = "fedora" ]; then
+      install util-linux-user
+    fi
     if sudo true 2>/dev/null; then
       sudo chsh -s ${bin} ${USER} || fail "Failed to sudo chsh"
     else
@@ -135,6 +156,9 @@ EOF
 bootstrap_chezmoi () {
 
   mise use -g chezmoi || fail "chezmoi install failed"
+  # used for validating chezmoi data
+  mise use -g jq
+  mise use -g jsonschema
 
   local brewUserLine=
   local brewsLine=
@@ -174,8 +198,6 @@ EOF
   fi
 
   mise exec chezmoi -- chezmoi init -v ${REPO} || fail "could not init chezmoi"
-  # jsonschema is used for validating chezmoi data
-  mise install jsonschema
   mise exec chezmoi -- chezmoi apply -v || fail "could not apply chezmoi"
   mise install
 }
