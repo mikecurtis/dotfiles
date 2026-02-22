@@ -1,0 +1,16 @@
+#!/bin/bash
+
+hosts=($(tailscale status --json |
+	jq -r '(.Peer | values)[] | select(.Online) | .HostName' |
+	sort))
+
+while [ ${#hosts[@]} -gt 0 ]; do
+  host="${hosts[0]}"
+  echo "=== Upgrading ${host} ==="
+  hosts=(${hosts[@]:1:${#hosts[@]}})
+  ssh -t ${host} "\${SHELL} -i -c u"
+  if [ $? -gt 0 ]; then
+    hosts=(${hosts[@]} ${host})
+  fi
+  sleep 1
+done
