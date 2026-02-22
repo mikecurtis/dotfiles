@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ex
+
 repo="$(gh repo set-default --view 2>/dev/null)"
 if [ "$?" = "0" ]; then
   if [ "${repo}" = "" ]; then
@@ -43,7 +45,7 @@ EOF
     cmd="list --limit 100"
     ;;
   -a|--add|--create)
-    cmd="create -b '' -t \\"$*\\""
+    cmd="create -b '' -t '$*'"
     ;;
   -c|--close)
     cmd="close $1"
@@ -53,8 +55,8 @@ EOF
     exit 0
     ;;
   *)
-    cmd="${op} $*"
+    cmd="${op} $@"
     ;;
 esac
 
-exec gh -R "${repo}" issue ${cmd}
+eval gh -R "${repo}" issue ${cmd}
