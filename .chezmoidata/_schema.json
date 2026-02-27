@@ -13,7 +13,8 @@
       "gituser": {"type": "string"},
       "brewuser": {"type": "string"},
       "mise": {
-        "tools": {}
+        "tools": {},
+	"shell_alias": {}
       }
     },
     "machlocal": {

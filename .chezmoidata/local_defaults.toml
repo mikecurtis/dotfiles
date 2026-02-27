@@ -1,5 +1,6 @@
 [chezmoidata.userlocal]
 mise.tools = {}
+mise.shell_alias = {}
 
 [chezmoidata.machlocal]
 compaudit.allow = []

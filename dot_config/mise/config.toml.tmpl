@@ -26,6 +26,10 @@ postinstall = """zsh -c \"(
 
 [shell_alias]
 
+{{- range $key, $val := .chezmoidata.userlocal.mise.shell_alias }}
+{{$key}} = {{$val | toToml}}
+{{- end }}
+
 ################################################
 # base utilities
 ################################################
