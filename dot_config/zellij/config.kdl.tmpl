@@ -2,13 +2,13 @@ keybinds clear-defaults=true {
     shared {
 
         bind "Ctrl n" {
-            Run "bash" "-c" "zellij-new-pane" {
+            Run "bash" "-c" "{{ .chezmoi.homeDir }}/.local/bin/chezmoi/zellij-new-pane" {
 		floating false
                 close_on_exit true
             }
         }
         bind "Ctrl Shift n" {
-            Run "bash" "-c" "zellij-new-pane" {
+            Run "bash" "-c" "{{ .chezmoi.homeDir }}/.local/bin/chezmoi/zellij-new-pane" {
 		floating false
                 close_on_exit true
 		stacked true
