@@ -16,7 +16,11 @@ fi
 [ "${GITUSER}" ] || GITUSER="${USER}"
 REPO="https://github.com/${GITUSER}/${DIR}"
 
-[ "${GITUSER}" ] && gh auth switch --user "${GITUSER}"
+if [ "${GITUSER}" ]; then
+  if ! gh auth switch --user "${GITUSER}"; then
+    gh auth login
+  fi
+fi
 
 if ! gh auth status; then
   gh auth login
