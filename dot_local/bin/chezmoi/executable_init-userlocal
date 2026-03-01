@@ -3,6 +3,7 @@
 set -ex
 
 DIR="chezmoi.userlocal"
+[ "$1" ] && GITUSER="$1"
 
 cd ~/.local/share
 
@@ -14,6 +15,8 @@ fi
 [ "${USER}" ] || USER=$(whoami)
 [ "${GITUSER}" ] || GITUSER="${USER}"
 REPO="https://github.com/${GITUSER}/${DIR}"
+
+[ "${GITUSER}" ] && gh auth switch --user "${GITUSER}"
 
 if ! gh auth status; then
   gh auth login
