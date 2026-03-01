@@ -19,10 +19,5 @@ if ! gh auth status; then
   gh auth login
 fi
 
-if ! gh repo view "${REPO}"; then
-  echo "${REPO} does not exist"
-  exit 0
-fi
-
 gh repo clone ${REPO}
 exec ./${DIR}/sync.sh
