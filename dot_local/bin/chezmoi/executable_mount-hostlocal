@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -ex
+
+DIR="chezmoi.hostlocal"
+[ "$1" ] && user="$1"
+[ "${user}" ] || exit 1
+
+cd ~/.local/share
+
+if [ -d "${DIR}" ]; then
+  echo "${DIR} already exists"
+  exit 0
+fi
+
+[ "${USER}" ] || USER=$(whoami)
+[ "${GITUSER}" ] || GITUSER="${USER}"
+REPO="https://github.com/${user}/${DIR}"
+
+[ "${GITUSER}" ] && gh auth switch --user "${GITUSER}"
+
+if ! gh auth status; then
+  gh auth login
+fi
+
+gh repo clone ${REPO}
