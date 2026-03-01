@@ -160,43 +160,6 @@ bootstrap_chezmoi () {
   mise use -g jq
   mise use -g jsonschema
 
-  local brewUserLine=
-  local brewsLine=
-  if [ "${OS}" = "macos" ]; then
-    brewUserLine="brewuser = \"${BREWUSER}\""
-    brewsLine="$(cat <<EOF
-brew.brews = []
-brew.casks = []
-EOF)"
-  fi
-
-  userLocalDir="${HOME}/.config/chezmoi/"
-  userLocalData="${userLocalDir}/chezmoi.userlocal.toml"
-  if ! [ -f "${userLocalData}" ]; then
-    mkdir -p "${userLocalDir}"
-    cat > "${userLocalData}" <<EOF
-[data.chezmoidata.userlocal]
-gituser = "${USER}"
-${brewUserLine}
-EOF
-  fi
-
-  machLocalDir="/var/lib/chezmoi"
-  machLocalData="${machLocalDir}/chezmoi.machlocal.toml"
-  local brewline=
-  if ! [ -f "${machLocalData}" ]; then
-    sudo mkdir -p "${machLocalDir}"
-    sudo chmod 755 "${machLocalDir}"
-    sudo touch "${machLocalData}"
-    sudo chmod 666 "${machLocalData}"
-    sudo cat > "${machLocalData}" <<EOF
-[data.chezmoidata.machlocal]
-compaudit.allow = []
-${brewsLine}
-EOF
-    sudo chmod 644 "${machLocalData}"
-  fi
-
   mise exec chezmoi -- chezmoi init -v ${REPO} || fail "could not init chezmoi"
   mise exec chezmoi -- chezmoi apply -v || fail "could not apply chezmoi"
   mise install
