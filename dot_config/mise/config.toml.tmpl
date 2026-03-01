@@ -102,9 +102,11 @@ pu = """() {(
 {{ if eq .chezmoi.os "darwin" -}}
   sudo -i -u "${BREWUSER}" sh -c "HOMEBREW_NO_AUTO_UPDATE=0 NONINTERACTIVE=1 brew upgrade"
 {{- else if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") -}}
-{{-   if eq .chezmoi.osRelease.idLike "debian" -}}
+{{-   if (or (eq .chezmoi.osRelease.id "debian")
+             (and (hasKey .chezmoi.osRelease "idLike")
+	          (eq .chezmoi.osRelease.idLike "debian"))) -}}
   sudo -i bash -c "apt update -y && apt upgrade -y && apt autoremove -y"
-{{-   else if eq .chezmoi.osRelease.idLike "arch" -}}
+{{-   else if eq .chezmoi.osRelease.id "arch" -}}
   sudo pacman -Suy
 {{-   else -}}
 {{- /* other Linux distro */ -}}
