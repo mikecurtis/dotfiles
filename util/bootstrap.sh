@@ -118,6 +118,8 @@ check_install_mise () {
       check_install mise
       ;;
     *)
+      # Installs to ~/.local/bin
+      export PATH="${PATH}:${HOME}/.local/bin"
       curl https://mise.run | sh
       check_which mise || fail "No mise found!"
       ;;
@@ -154,12 +156,10 @@ EOF
 }
 
 bootstrap_chezmoi () {
-
   mise use -g chezmoi || fail "chezmoi install failed"
   # used for validating chezmoi data
   mise use -g jq
   mise use -g jsonschema
-
   mise exec chezmoi -- chezmoi init -v ${REPO} || fail "could not init chezmoi"
   mise exec chezmoi -- chezmoi apply -v || fail "could not apply chezmoi"
   mise install
