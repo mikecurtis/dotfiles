@@ -1,5 +1,5 @@
-{{if stat "../chezmoi.userlocal" }}
-{{if exec "../chezmoi.userlocal/build.sh" (toPrettyJson .) }}
-{{includeTemplate "../chezmoi.userlocal/data.toml.tmpl" .}}
+{{if stat (joinPath .chezmoi.homeDir ".local/share/chezmoi.userlocal") }}
+{{if exec (joinPath .chezmoi.homeDir ".local/share/chezmoi.userlocal/build.sh") (toPrettyJson .) }}
+{{includeTemplate (joinPath .chezmoi.homeDir ".local/share/chezmoi.userlocal/data.toml.tmpl") .}}
 {{end}}
 {{end}}
