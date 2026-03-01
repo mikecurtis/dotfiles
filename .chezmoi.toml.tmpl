@@ -1,5 +1,7 @@
 {{if stat (joinPath .chezmoi.homeDir ".local/share/chezmoi.userlocal") }}
 {{if exec (joinPath .chezmoi.homeDir ".local/share/chezmoi.userlocal/build.sh") (toPrettyJson .) }}
 {{includeTemplate (joinPath .chezmoi.homeDir ".local/share/chezmoi.userlocal/data.toml.tmpl") .}}
+{{ else }}
+{{ fail "Could not execute userlocal build!" }}
 {{end}}
 {{end}}
