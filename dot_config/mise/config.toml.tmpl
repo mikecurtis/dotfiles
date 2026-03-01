@@ -64,8 +64,8 @@ cm = "chezmoi"
 cmc = "cd {{.chezmoi.sourceDir}}"
 cmd = "chezmoi diff"
 cma = "chezmoi init --apply -v"
-cmeu = "$EDITOR ${HOME}/.config/chezmoi/chezmoi.userlocal.toml"
-cmem = "sudo $EDITOR /var/lib/chezmoi/chezmoi.machlocal.toml"
+cmlu = "{{.chezmoi.homeDir}}/.local/share/chezmoi.userlocal/sync.sh"
+cmlc = "cd {{.chezmoi.homeDir}}/.local/share/chezmoi.userlocal"
 cmu = "chezmoi update -v"
 cmi = """() {(
   setopt LOCAL_OPTIONS ERREXIT
