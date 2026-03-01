@@ -1,2 +1,5 @@
-{{ include (joinPath .chezmoi.homeDir ".config/chezmoi/chezmoi.userlocal.toml") }}
-{{ include "/var/lib/chezmoi/chezmoi.machlocal.toml" }}
+{{if stat "../chezmoi.userlocal" }}
+{{if exec "../chezmoi.userlocal/build.sh" (toPrettyJson .) }}
+{{includeTemplate "../chezmoi.userlocal/data.toml.tmpl" .}}
+{{end}}
+{{end}}
