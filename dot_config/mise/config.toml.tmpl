@@ -64,8 +64,9 @@ cm = "chezmoi"
 cmc = "cd {{.chezmoi.sourceDir}}"
 cmd = "chezmoi diff"
 cma = "chezmoi init --apply -v"
-cmlu = "{{.chezmoi.homeDir}}/.local/share/chezmoi.userlocal/sync.sh"
-cmlc = "cd {{.chezmoi.homeDir}}/.local/share/chezmoi.userlocal"
+cmulu = "{{.chezmoi.homeDir}}/.local/share/chezmoi.userlocal/sync.sh"
+cmulc = "cd {{.chezmoi.homeDir}}/.local/share/chezmoi.userlocal"
+cmhlc = "cd {{.chezmoi.homeDir}}/.local/share/chezmoi.hostlocal"
 cmu = "chezmoi update -v"
 cmi = """() {(
   setopt LOCAL_OPTIONS ERREXIT
