@@ -20,6 +20,7 @@ function help() {
     --help|-h
     --list|-l
     --create|-c
+    --rm|-r
     --distro|-d DISTRO
     --name|-n NAME
     --user|-u USER
@@ -107,12 +108,16 @@ while [[ $# -gt 0 ]]; do
       setMode "help"
       shift
       ;;
+    --list|-l)
+      setMode "list"
+      shift
+      ;;
     --create|-c)
       setMode "create"
       shift
       ;;
-    --list|-l)
-      setMode "list"
+    --rm|-r)
+      setMode "rm"
       shift
       ;;
     --distro|-d)
@@ -161,6 +166,10 @@ set -- "${POSITIONAL[@]}"
 [ ${#POSITIONAL[@]} -gt 0 ] && usage "positional arguments set"
 
 
+function list() {
+  ssh exe.dev ls
+}
+
 function create() {
   if "$(hasName)" ]; then
     ssh exe.dev new --name="$(getName)" --image="$(getDistro)" --no-email
@@ -173,8 +182,8 @@ function create() {
   ssh $(getUser)@$(getName).exe.xyz 'bash -s' < {{ joinPath .chezmoi.sourceDir "../util/bootstrap.sh" }}
 }
 
-function list() {
-  ssh exe.dev ls
+function rm() {
+  ssh exe.dev rm $(getName)
 }
 
 function attach() {
