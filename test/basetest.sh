@@ -11,6 +11,7 @@ _REBUILD=false
 _RESET=false
 _DISTRO=""
 _USER=norm
+_IMAGE=""
 
 function fail() {
   echo "$@" >&2
@@ -31,8 +32,6 @@ Usage: $0 [options]
 Options:
   --local
       Copy local repo for testing uncommitted changes
-  --rebuild
-      Rebuild image and start fresh
   --reset
       Reset to pristine state (removes container)
   --distro|-d DISTRO
@@ -45,10 +44,6 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --local)
       _LOCAL=true
-      shift
-      ;;
-    --rebuild)
-      _REBUILD=true
       shift
       ;;
     --reset)
@@ -85,16 +80,21 @@ set -- "${POSITIONAL[@]}"
 [ ${#POSITIONAL[@]} -gt 0 ] && usage "positional arguments set"
 
 [ "${_DISTRO}" ] || usage "No --distro set"
-IMAGE_NAME="dotfiles-test-${_DISTRO}"
+
+IMAGE_NAME=""
+case "${_DISTRO}" in
+  ubuntu)
+    IMAGE_NAME="ubuntu:24.04"
+    ;;
+  arch)
+    IMAGE_NAME="archlinux/archlinux:base-devel"
+    ;;
+  *)
+    fail "Unknown distro: ${_DISTRO}"
+    ;;
+esac
 CONTAINER_NAME="dotfiles-test-container-${_DISTRO}"
 
-
-# Build the image if needed
-if ${_REBUILD} || ! docker image inspect "${IMAGE_NAME}" &>/dev/null; then
-    echo "Building Docker image..."
-    docker build --file img-${_DISTRO}.Dockerfile -t "${IMAGE_NAME}" "${SCRIPT_DIR}"
-    _RESET=true  # rebuild implies reset
-fi
 
 # Handle reset
 if ${_RESET}; then
@@ -112,8 +112,6 @@ fi
 if docker ps -q -f name="${CONTAINER_NAME}" | grep -q .; then
     echo "Attaching to existing container..."
     docker exec -i -u "${_USER}" -t "${CONTAINER_NAME}" "zsh"
-    #docker exec -it "${CONTAINER_NAME}" tmux attach -t main 2>/dev/null \
-    #    || docker exec -it "${CONTAINER_NAME}" tmux new -s main
     exit 0
 fi
 
@@ -126,8 +124,6 @@ docker run -d --name "${CONTAINER_NAME}" "${IMAGE_NAME}" sleep infinity
 TMPDIR="/tmp/bootstrap"
 set -ex
 
-# TODO: adjust for different distro
-docker exec -i -u root -t "${CONTAINER_NAME}" bash -c "apt update -y && apt install -y curl gpg sudo"
 docker exec -i -u root -t "${CONTAINER_NAME}" mkdir -p ${TMPDIR}
 
 if ${_LOCAL}; then
@@ -143,7 +139,6 @@ else
     for script in vminit.sh bootstrap.sh; do
       curl -fsSL ${REMOTE_UTIL}/${script} -o ${f}
       docker cp ${f} "${CONTAINER_NAME}:${TMPDIR}/util/${script}"
-      # docker cp ${f} exec -i -u root -t "${CONTAINER_NAME}" curl -fsSL ${REMOTE_UTIL}/${script} -o ${TMPDIR}/util/${script}
       docker exec -i -u root -t "${CONTAINER_NAME}" chmod 755 ${TMPDIR}/util/${script}
     done
 
