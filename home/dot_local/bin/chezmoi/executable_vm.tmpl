@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# TODO: Add proper error handling and logging, and remove this
 set -ex
 
 function fail() {
@@ -137,8 +138,8 @@ while [[ $# -gt 0 ]]; do
       setMode "create"
       shift
       ;;
-    --rm|-r)
-      setMode "rm"
+    --remove|-r)
+      setMode "remove"
       shift
       ;;
     --distro|-d)
@@ -226,7 +227,12 @@ function _createVM () {
   image_name=""
   case "$(getDistro)" in
     ubuntu)
-      image_name="ubuntu:24.04"
+      # exeuntu appears to be cached to be much faster here.
+      if [ "$(getProvider})" = "exe" ]; then
+        image_name="exeuntu"
+      else
+        image_name="ubuntu:24.04"
+      fi
       ;;
     arch)
       image_name="archlinux/archlinux:base-devel"
@@ -259,10 +265,10 @@ function _initVM () {
     shift
     case "$(getProvider)" in
       exe)
-        ssh ${user}@$(getName).exe.xyz "$@"
+        ssh -t $(getName).exe.xyz sudo -i -u ${user} "$@"
         ;;
       docker)
-        docker exec -i -u ${user} -t "$(getName)" "$@"
+        docker exec -i -u ${user} "$(getName)" "$@"
         ;;
     esac
   }
@@ -274,7 +280,6 @@ function _initVM () {
     echo "Copying local repo into container..."
     tar -C "${_REPO_ROOT}" --exclude='.git' --exclude='*.swp' -cf - . \
       | _remote root tar -C ${remote_tmp} -xf -
-    # TODO: Give bootstrap the ability to use local config
   else
     echo "Fetching initialization scripts..."
     _remote root mkdir -p ${remote_tmp}/util
@@ -282,7 +287,7 @@ function _initVM () {
     trap "rm -f ${f}" EXIT
     for script in vminit.sh bootstrap.sh; do
       curl -fsSL ${remote_util}/${script} -o ${f}
-      docker cp ${f} "$(getName):${remote_tmp}/util/${script}"
+      cat ${f} | _remote root dd of=${remote_tmp}/util/${script} if=/dev/stdin
       _remote root chmod 755 ${remote_tmp}/util/${script}
     done
   fi
@@ -302,7 +307,7 @@ function create() {
   _initVM
 }
 
-function rm() {
+function remove() {
   case "$(getProvider)" in
     exe)
       ssh exe.dev rm $(getName)
