@@ -66,6 +66,7 @@ cmd = "chezmoi diff"
 cma = "chezmoi init --apply -v"
 cmulu = "{{.chezmoi.homeDir}}/.local/share/chezmoi.userlocal/sync.sh"
 cmulc = "cd {{.chezmoi.homeDir}}/.local/share/chezmoi.userlocal"
+cmule = "nvim {{.chezmoi.homeDir}}/.local/share/chezmoi.userlocal/user/{{.chezmoi.username}}/{{.chezmoi.hostname}}/data.toml.tmpl"
 cmhlc = "cd {{.chezmoi.homeDir}}/.local/share/chezmoi.hostlocal"
 cmu = "chezmoi update -v"
 cmi = """() {(
