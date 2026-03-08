@@ -40,6 +40,13 @@ if [ -z "$OS" ]; then
   fail "Unknown OS"
 fi
 
+ARCH="$(uname -m)"
+case "${ARCH}" in
+  x86_64)  ARCH="amd64" ;;
+  aarch64) ARCH="arm64" ;;
+  armv7l)  ARCH="armhf" ;;
+esac
+
 confirm () {
   ${YES} && return
   read -p "$@ " choice
@@ -111,7 +118,7 @@ check_install_mise () {
     ubuntu)
       sudo install -dm 755 /etc/apt/keyrings
       curl -fSs https://mise.jdx.dev/gpg-key.pub | sudo gpg --dearmor -o /etc/apt/keyrings/mise-archive-keyring.gpg
-      echo "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.gpg arch=amd64] https://mise.jdx.dev/deb stable main" | sudo tee /etc/apt/sources.list.d/mise.list
+      echo "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.gpg arch=${ARCH}] https://mise.jdx.dev/deb stable main" | sudo tee /etc/apt/sources.list.d/mise.list
       check_install mise
       ;;
     macos)
