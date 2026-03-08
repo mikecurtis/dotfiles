@@ -7,6 +7,11 @@ REPO="https://github.com/mikecurtis/dotfiles"
 CMDIR="${HOME}/.local/share/chezmoi"
 BREWUSER="brewdog"
 
+LOCAL_REPO=""
+if [ "$1" ]; then
+  LOCAL_REPO="$1"
+fi
+
 fail () {
   echo "$@" >&2
   exit 1

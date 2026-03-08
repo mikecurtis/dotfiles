@@ -289,7 +289,11 @@ function _initVM () {
 
   # Run root setup.
   _remote root ${remote_tmp}/util/vminit.sh $(getUser)
-  _remote $(getUser) ${remote_tmp}/util/bootstrap.sh
+  if $(getLocal); then
+    _remote $(getUser) ${remote_tmp}/util/bootstrap.sh ${remote_tmp}
+  else
+    _remote $(getUser) ${remote_tmp}/util/bootstrap.sh
+  fi
   _remote $(getUser) zsh
 }
 
