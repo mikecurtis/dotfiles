@@ -4,6 +4,7 @@ set -ex
 
 HOME="${HOME:-~}"
 REPO="https://github.com/mikecurtis/dotfiles"
+CMDIR="${HOME}/.local/share/chezmoi"
 BREWUSER="brewdog"
 
 fail () {
@@ -167,7 +168,14 @@ bootstrap_chezmoi () {
   # used for validating chezmoi data
   mise use -g jq
   mise use -g jsonschema
-  mise exec chezmoi -- chezmoi init -v ${REPO} || fail "could not init chezmoi"
+  repo="${REPO}"
+  if [ "${LOCAL_REPO}" ]; then
+    rm -rf ${CMDIR}
+    cp -r "${LOCAL_REPO}" ${CMDIR}
+    git -C ${CMDIR} init
+    repo=""
+  fi
+  mise exec chezmoi -- chezmoi init -v ${repo} || fail "could not init chezmoi"
   mise exec chezmoi -- chezmoi apply -v || fail "could not apply chezmoi"
   mise install
 }
