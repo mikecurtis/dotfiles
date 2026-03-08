@@ -103,13 +103,13 @@ if ${_RESET}; then
 fi
 
 # Check if container is stopped
-if docker ps -aq -f name="${CONTAINER_NAME}" -f status=exited | grep -q .; then
+if docker ps -aq -f vm=true -f name="${CONTAINER_NAME}" -f status=exited | grep -q .; then
     echo "Starting stopped container..."
     docker start "${CONTAINER_NAME}"
 fi
 
 # Check if container exists and is running
-if docker ps -q -f name="${CONTAINER_NAME}" | grep -q .; then
+if docker ps -q -f vm=true -f name="${CONTAINER_NAME}" | grep -q .; then
     echo "Attaching to existing container..."
     docker exec -i -u "${_USER}" -t "${CONTAINER_NAME}" "zsh"
     exit 0
@@ -119,7 +119,7 @@ fi
 echo "Starting fresh Linux environment..."
 echo ""
 
-docker run -d --name "${CONTAINER_NAME}" "${IMAGE_NAME}" sleep infinity
+docker run -d --label vm=true --name "${CONTAINER_NAME}" "${IMAGE_NAME}" sleep infinity
 
 TMPDIR="/tmp/bootstrap"
 set -ex
