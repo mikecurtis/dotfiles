@@ -16,14 +16,17 @@ function usage() {
 
 function help() {
   cat <<EOF
-  $(basename $0):
-    --help|-h
-    --list|-l
-    --create|-c
-    --rm|-r
-    --distro|-d DISTRO
-    --name|-n NAME
-    --user|-u USER
+Usage: $0 [options]
+
+Options:
+  --help|-h
+  --list|-l
+  --create|-c
+  --rm|-r
+  --distro|-d DISTRO
+  --name|-n NAME
+  --user|-u USER
+  --provider|-p PROVIDER
 EOF
 }
 
