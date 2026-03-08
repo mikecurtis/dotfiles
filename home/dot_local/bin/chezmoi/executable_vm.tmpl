@@ -1,0 +1,185 @@
+#!/bin/bash
+
+set -ex
+
+function fail() {
+  echo "$@" >&2
+  exit 1
+}
+
+function usage() {
+  echo "$@" >&2
+  echo >&2
+  help >&2
+  exit 1
+}
+
+function help() {
+  cat <<EOF
+  $(basename $0):
+    --help|-h
+    --list|-l
+    --create|-c
+    --distro|-d DISTRO
+    --name|-n NAME
+    --user|-u USER
+EOF
+}
+
+
+_MODE=""
+_NAME=""
+_DISTRO=""
+_USER=""
+_PROVIDER=""
+
+
+function getMode() {
+  mode="${_MODE}"
+  [ "${mode}" ] || mode="attach"
+  echo "${mode}"
+}
+function getName() {
+  name="${_NAME}"
+  [ "${name}" ] || fail "No --name specified"
+  echo "${name}"
+}
+function getDistro() {
+  distro="${_DISTRO}"
+  [ "{distro}" ] || distro="ubuntu"
+  echo "${distro}"
+}
+function getUser() {
+  user="${_USER}"
+  [ "${user}" ] || user="${USER}"
+  [ "${user}" ] || user="$(whoami)"
+  [ "${user}" ] || fail "No user!"
+  echo "${user}"
+}
+function getProvider() {
+  provider="${_PROVIDER}"
+  [ "${provider}" ] || provider="exe"
+  echo "${provider}"
+}
+
+function hasMode() {
+  [ "${_MODE}" ] && echo "true" || echo "false"
+}
+function hasName() {
+  [ "${_NAME}" ] && echo "true" || echo "false"
+}
+function hasDistro() {
+  [ "${_DISTRO}" ] && echo "true" || echo "false"
+}
+function hasUser() {
+  [ "${_USER}" ] && echo "true" || echo "false"
+}
+function hasProvider() {
+  [ "${_PROVIDER}" ] && echo "true" || echo "false"
+}
+
+function setMode() {
+  [ "${_MODE}" ] && usage "mode already set!"
+  _MODE="$1"
+}
+function setName() {
+  [ "${_NAME}" ] && usage "name already set!"
+  _NAME="$1"
+}
+function setDistro() {
+  [ "${_DISTRO}" ] && usage "distro already set!"
+  _DISTRO="$1"
+}
+function setUser() {
+  [ "${_USER}" ] && usage "user already set!"
+  _USER="$1"
+}
+function setProvider() {
+  [ "${_PROVIDER}" ] && usage "provider already set!"
+  _PROVIDER="$1"
+}
+
+
+POSITIONAL=()
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --help|-h)
+      setMode "help"
+      shift
+      ;;
+    --create|-c)
+      setMode "create"
+      shift
+      ;;
+    --list|-l)
+      setMode "list"
+      shift
+      ;;
+    --distro|-d)
+      setDistro "$2"
+      shift 2
+      ;;
+    --distro=*)
+      setDistro "${1#*=}"
+      shift
+      ;;
+    --name|-n)
+      setName "$2"
+      shift 2
+      ;;
+    --name=*)
+      setName "${1#*=}"
+      shift
+      ;;
+    --user|-u)
+      setUser "$2"
+      shift 2
+      ;;
+    --user=*)
+      setUser "${1#*=}"
+      shift
+      ;;
+    --)
+      shift
+      POSITIONAL+=("$@")
+      break
+      ;;
+    -*)
+      usage "unknown flag: $1"
+      ;;
+    *)
+      POSITIONAL+=("$1")
+      shift
+      ;;
+  esac
+done
+
+
+# Restore positional parameters
+set -- "${POSITIONAL[@]}"
+
+[ ${#POSITIONAL[@]} -gt 0 ] && usage "positional arguments set"
+
+
+function create() {
+  if "$(hasName)" ]; then
+    ssh exe.dev new --name="$(getName)" --image="$(getDistro)" --no-email
+  else
+    output="$(ssh exe.dev new --image="$(getDistro)" --no-email)"
+    echo "${output}"
+    setName "$(echo "${output}" | grep '^ssh' | head -1 | cut -d ' ' -f2 | cut -d '.' -f1)"
+  fi
+  ssh root@$(getName).exe.xyz 'bash -s' < {{ joinPath .chezmoi.sourceDir "../util/vminit.sh" }} $(getUser)
+  ssh $(getUser)@$(getName).exe.xyz 'bash -s' < {{ joinPath .chezmoi.sourceDir "../util/bootstrap.sh" }}
+}
+
+function list() {
+  ssh exe.dev ls
+}
+
+function attach() {
+  ssh $(getUser)@$(getName).exe.xyz
+}
+
+
+$(getMode)
