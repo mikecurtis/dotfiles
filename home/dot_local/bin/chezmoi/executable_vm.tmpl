@@ -27,15 +27,18 @@ Options:
   --name|-n NAME
   --user|-u USER
   --provider|-p PROVIDER
+  --local|-o
 EOF
 }
 
-
+# TODO: Allow -r and -c to be set together
 _MODE=""
 _NAME=""
 _DISTRO=""
 _USER=""
 _PROVIDER=""
+_LOCAL=""
+_REPO_ROOT="$(cd {{.chezmoi.sourceDir}}/.. && pwd)"
 
 
 function getMode() {
@@ -45,12 +48,15 @@ function getMode() {
 }
 function getName() {
   name="${_NAME}"
+  if ! [ "${name}" ]; then
+    [ "$(getProvider)" = "docker" ] && name="vm-$(getDistro)"
+  fi
   [ "${name}" ] || fail "No --name specified"
   echo "${name}"
 }
 function getDistro() {
   distro="${_DISTRO}"
-  [ "{distro}" ] || distro="ubuntu"
+  [ "${distro}" ] || distro="ubuntu"
   echo "${distro}"
 }
 function getUser() {
@@ -64,6 +70,11 @@ function getProvider() {
   provider="${_PROVIDER}"
   [ "${provider}" ] || provider="exe"
   echo "${provider}"
+}
+function getLocal() {
+  local="${_LOCAL}"
+  [ "${local}" ] || local=false
+  echo "${local}"
 }
 
 function hasMode() {
@@ -80,6 +91,9 @@ function hasUser() {
 }
 function hasProvider() {
   [ "${_PROVIDER}" ] && echo "true" || echo "false"
+}
+function hasLocal() {
+  [ "${_LOCAL}" ] && echo "true" || echo "false"
 }
 
 function setMode() {
@@ -101,6 +115,10 @@ function setUser() {
 function setProvider() {
   [ "${_PROVIDER}" ] && usage "provider already set!"
   _PROVIDER="$1"
+}
+function setLocal() {
+  [ "${_LOCAL}" ] && usage "local already set!"
+  _LOCAL="$1"
 }
 
 
@@ -147,6 +165,18 @@ while [[ $# -gt 0 ]]; do
       setUser "${1#*=}"
       shift
       ;;
+    --provider|-p)
+      setProvider "$2"
+      shift 2
+      ;;
+    --provider=*)
+      setProvider "${1#*=}"
+      shift
+      ;;
+    --local|-o)
+      setLocal "true"
+      shift
+      ;;
     --)
       shift
       POSITIONAL+=("$@")
@@ -162,35 +192,132 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-
 # Restore positional parameters
 set -- "${POSITIONAL[@]}"
 
 [ ${#POSITIONAL[@]} -gt 0 ] && usage "positional arguments set"
 
+case "$(getProvider)" in
+  exe)
+    ;;
+  docker)
+    ;;
+  *)
+    fail "Unknown provider: $(getProvider)"
+    ;;
+esac
 
 function list() {
-  ssh exe.dev ls
+  case "$(getProvider)" in
+    exe)
+      ssh exe.dev ls
+      ;;
+    docker)
+      docker ps -a -f label=vm=true
+      ;;
+  esac
+}
+
+function _createVM () {
+
+  # TODO: Check if container already exists.
+  # TODO: Check if container exists but is stopped.
+
+  image_name=""
+  case "$(getDistro)" in
+    ubuntu)
+      image_name="ubuntu:24.04"
+      ;;
+    arch)
+      image_name="archlinux/archlinux:base-devel"
+      ;;
+    *)
+      fail "Unknown distro: $(getDistro)"
+      ;;
+  esac
+
+  case "$(getProvider)" in
+    exe)
+      if "$(hasName)" ]; then
+        ssh exe.dev new --name="$(getName)" --image="${image_name}" --no-email
+      else
+        output="$(ssh exe.dev new --image="$(getDistro)" --no-email)"
+        echo "${output}" >&2
+        setName "$(echo "${output}" | grep '^ssh' | head -1 | cut -d ' ' -f2 | cut -d '.' -f1)"
+      fi
+      ;;
+    docker)
+      docker run -d --label vm=true --name "$(getName)" "${image_name}" sleep infinity
+      ;;
+  esac
+}
+
+function _initVM () {
+
+  function _remote() {
+    user=$1
+    shift
+    case "$(getProvider)" in
+      exe)
+        ssh ${user}@$(getName).exe.xyz "$@"
+        ;;
+      docker)
+        docker exec -i -u ${user} -t "$(getName)" "$@"
+        ;;
+    esac
+  }
+
+  remote_tmp="/tmp/bootstrap"
+  remote_util="https://raw.githubusercontent.com/mikecurtis/dotfiles/refs/heads/main/util"
+  _remote root mkdir -p ${remote_tmp}
+  if $(getLocal); then
+    echo "Copying local repo into container..."
+    tar -C "${_REPO_ROOT}" --exclude='.git' --exclude='*.swp' -cf - . \
+      | _remote root tar -C ${remote_tmp} -xf -
+    # TODO: Give bootstrap the ability to use local config
+  else
+    echo "Fetching initialization scripts..."
+    _remote root mkdir -p ${remote_tmp}/util
+    f=$(mktemp)
+    trap "rm -f ${f}" EXIT
+    for script in vminit.sh bootstrap.sh; do
+      curl -fsSL ${remote_util}/${script} -o ${f}
+      docker cp ${f} "$(getName):${remote_tmp}/util/${script}"
+      _remote root chmod 755 ${remote_tmp}/util/${script}
+    done
+  fi
+
+  # Run root setup.
+  _remote root ${remote_tmp}/util/vminit.sh $(getUser)
+  _remote $(getUser) ${remote_tmp}/util/bootstrap.sh
+  _remote $(getUser) zsh
 }
 
 function create() {
-  if "$(hasName)" ]; then
-    ssh exe.dev new --name="$(getName)" --image="$(getDistro)" --no-email
-  else
-    output="$(ssh exe.dev new --image="$(getDistro)" --no-email)"
-    echo "${output}"
-    setName "$(echo "${output}" | grep '^ssh' | head -1 | cut -d ' ' -f2 | cut -d '.' -f1)"
-  fi
-  ssh root@$(getName).exe.xyz 'bash -s' < {{ joinPath .chezmoi.sourceDir "../util/vminit.sh" }} $(getUser)
-  ssh $(getUser)@$(getName).exe.xyz 'bash -s' < {{ joinPath .chezmoi.sourceDir "../util/bootstrap.sh" }}
+  _createVM
+  _initVM
 }
 
 function rm() {
-  ssh exe.dev rm $(getName)
+  case "$(getProvider)" in
+    exe)
+      ssh exe.dev rm $(getName)
+      ;;
+    docker)
+      docker rm -f "$(getName)"
+      ;;
+  esac
 }
 
 function attach() {
-  ssh $(getUser)@$(getName).exe.xyz
+  case "$(getProvider)" in
+    exe)
+      ssh $(getUser)@$(getName).exe.xyz
+      ;;
+    docker)
+      docker exec -i -u $(getUser) -t $(getName) zsh
+      ;;
+  esac
 }
 
 
