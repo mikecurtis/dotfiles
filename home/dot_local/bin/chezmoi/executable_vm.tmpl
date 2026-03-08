@@ -267,7 +267,7 @@ function _initVM () {
     esac
   }
 
-  remote_tmp="/tmp/bootstrap"
+  remote_tmp="/tmp/chezmoi"
   remote_util="https://raw.githubusercontent.com/mikecurtis/dotfiles/refs/heads/main/util"
   _remote root mkdir -p ${remote_tmp}
   if $(getLocal); then
