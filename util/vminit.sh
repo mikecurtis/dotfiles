@@ -94,10 +94,17 @@ check_install () {
 }
 
 install_base_packages () {
-  if [ "${OS}" = "arch" ]; then
-    install base-devel
-    check_install sudo
-  fi
+  case "${OS}" in
+    arch)
+      install base-devel
+      check_install sudo
+      ;;
+    ubuntu)
+      check_install curl
+      check_install gpg
+      check_install sudo
+      ;;
+  esac
 }
 
 create_inituser () {
