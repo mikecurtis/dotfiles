@@ -68,6 +68,7 @@ cmulu = "{{.chezmoi.homeDir}}/.local/share/chezmoi.userlocal/sync.sh"
 cmulc = "cd {{.chezmoi.homeDir}}/.local/share/chezmoi.userlocal"
 cmule = "nvim {{.chezmoi.homeDir}}/.local/share/chezmoi.userlocal/user/{{.chezmoi.username}}/{{.chezmoi.hostname}}/data.toml.tmpl"
 cmhlc = "cd {{.chezmoi.homeDir}}/.local/share/chezmoi.hostlocal"
+cmhle = "nvim {{.chezmoi.homeDir}}/.local/share/chezmoi.userlocal/host/{{.chezmoi.hostname}}/data.toml.tmpl"
 cmu = "chezmoi update -v"
 cmi = """() {(
   setopt LOCAL_OPTIONS ERREXIT
