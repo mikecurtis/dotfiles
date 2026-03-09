@@ -1,4 +1,4 @@
-# Define additional allow patterns in chezmoidata.machlocal.compaudit
+# Define additional allow patterns in chezmoidata.hostlocal.compaudit
 
 [chezmoidata.compaudit]
 allow = [

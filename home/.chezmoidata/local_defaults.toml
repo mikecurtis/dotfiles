@@ -1,10 +1,10 @@
 [chezmoidata.userlocal]
 gituser = ""
-brewuser = ""
 mise.tools = {}
 mise.shell_alias = {}
 
-[chezmoidata.machlocal]
+[chezmoidata.hostlocal]
 compaudit.allow = []
+brew.user = ""
 brew.brews = []
 brew.casks = []

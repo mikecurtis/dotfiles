@@ -1,4 +1,4 @@
-# Define additional packages in chezmoidata.machlocal.brew
+# Define additional packages in chezmoidata.hostlocal.brew
 
 [chezmoidata.brew]
 brews = [

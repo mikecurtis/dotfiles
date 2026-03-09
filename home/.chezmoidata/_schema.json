@@ -11,17 +11,17 @@
     },
     "userlocal": {
       "gituser": {"type": "string"},
-      "brewuser": {"type": "string"},
       "mise": {
         "tools": {},
 	"shell_alias": {}
       }
     },
-    "machlocal": {
+    "hostlocal": {
       "compaudit": {
         "allow": []
       },
       "brew": {
+        "user": {"type": "string"},
         "brews": [],
         "casks": []
       }
