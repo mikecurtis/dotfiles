@@ -203,6 +203,8 @@ case "$(getProvider)" in
     ;;
   docker)
     ;;
+  vercel)
+    ;;
   *)
     fail "Unknown provider: $(getProvider)"
     ;;
@@ -215,6 +217,9 @@ function list() {
       ;;
     docker)
       docker ps -a -f label=vm=true
+      ;;
+    vercel)
+      pnpx sandbox ls
       ;;
   esac
 }
@@ -244,16 +249,24 @@ function _createVM () {
 
   case "$(getProvider)" in
     exe)
-      if "$(hasName)" ]; then
+      if "$(hasName)"; then
         ssh exe.dev new --name="$(getName)" --image="${image_name}" --no-email
       else
         output="$(ssh exe.dev new --image="$(getDistro)" --no-email)"
         echo "${output}" >&2
-        setName "$(echo "${output}" | grep '^ssh' | head -1 | cut -d ' ' -f2 | cut -d '.' -f1)"
+        setName $(echo "${output}" | grep '^ssh' | head -1 | cut -d ' ' -f2 | cut -d '.' -f1)
       fi
       ;;
     docker)
       docker run -d --label vm=true --name "$(getName)" "${image_name}" sleep infinity
+      ;;
+    vercel)
+      if "$(hasName)"; then
+        fail "--name not supported yet with Vercel."
+      else
+        output="$(pnpx sandbox create)"
+	setName "${output}"
+      fi
       ;;
   esac
 }
@@ -269,6 +282,9 @@ function _initVM () {
         ;;
       docker)
         docker exec -i -u ${user} "$(getName)" "$@"
+        ;;
+      vercel)
+	pnpx sandbox exec "$(getName)" "$@"
         ;;
     esac
   }
@@ -315,6 +331,9 @@ function remove() {
     docker)
       docker rm -f "$(getName)"
       ;;
+    vercel)
+      pnpx sandbox rm $(getName)
+      ;;
   esac
 }
 
@@ -325,6 +344,9 @@ function attach() {
       ;;
     docker)
       docker exec -i -u $(getUser) -t $(getName) zsh
+      ;;
+    vercel)
+      pnpx sandbox connect $(getName)
       ;;
   esac
 }
