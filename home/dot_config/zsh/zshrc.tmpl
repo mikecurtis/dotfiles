@@ -63,6 +63,8 @@ unset opt disabled_opts
 
 source <(mise activate zsh)
 
+source <(zoxide init zsh)
+
 if [[ $options[zle] = on ]]; then
   source <(fzf --zsh)
 fi
