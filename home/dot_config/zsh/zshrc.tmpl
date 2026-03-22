@@ -65,6 +65,8 @@ source <(mise activate zsh)
 
 source <(zoxide init zsh)
 
+source <(zmx completions zsh)
+
 if [[ $options[zle] = on ]]; then
   source <(fzf --zsh)
 fi

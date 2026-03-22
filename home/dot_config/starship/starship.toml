@@ -1,5 +1,5 @@
 "$schema" = "https://starship.rs/config-schema.json"
-format = "$character $username@$hostname:$directory $git_branch$git_commit$git_metrics$git_status# "
+format = "$character $username@$hostname:${env_var.ZMX_SESSION}$directory $git_branch$git_commit$git_metrics$git_status# "
 palette = "custom"
 
 [aws]
@@ -52,3 +52,7 @@ format = "[$user]($style)"
 show_always = true
 style_root = "red"
 style_user = "magenta"
+
+[env_var.ZMX_SESSION]
+format = "[\\[](white)[$env_value](magenta)[\\]](white)"
+description = "zmx session name"

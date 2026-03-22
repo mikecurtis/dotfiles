@@ -1,0 +1,50 @@
+#!/bin/bash
+
+set -e
+
+__fzf_list_tailscale_hosts() {
+  if command -v tailscale >/dev/null 2>&1; then
+    tailscale status --json | jq -r '.Peer[] | select (.Online == true) | .HostName' | sort
+  else
+    return 1
+  fi
+}
+
+# Excerpt from https://github.com/junegunn/fzf/blob/master/shell/completion.bash
+__fzf_list_known_hosts() {
+  command cat <(command tail -n +1 ~/.ssh/config ~/.ssh/config.d/* /etc/ssh/ssh_config 2> /dev/null | command grep -i '^\s*host\(name\)\? ' | command awk '{for (i = 2; i <= NF; i++) print $1 " " $i}' | command grep -v '[*?%]') \
+    <(command grep -oE '^[[a-z0-9.,:-]+' ~/.ssh/known_hosts 2> /dev/null | command tr ',' '\n' | command tr -d '[' | command awk '{ print $1 " " $1 }') \
+    <(command grep -v '^\s*\(#\|$\)' /etc/hosts 2> /dev/null | command grep -Fv '0.0.0.0' | command sed 's/#.*//') |
+    command awk '{for (i = 2; i <= NF; i++) print $i}' | command sort -u | command grep -vx -e localhost -e ${HOSTNAME}
+}
+
+__fzf_list_all_hosts() {
+  # List tailscale hosts first, followed by other hosts.
+  if tailscale_hosts="$(__fzf_list_tailscale_hosts)"; then
+    known_hosts="$(__fzf_list_known_hosts | grep -vx "${tailscale_hosts}")"
+    echo "localhost"
+    echo "${tailscale_hosts}"
+    echo "${known_hosts}"
+  else
+    echo "localhost"
+    __fzf_list_known_hosts
+  fi
+}
+
+host="$(__fzf_list_all_hosts |
+    fzf --header '[ssh select] Press CTRL-Y to copy host names to the clipboard' \
+        --prompt="${USER}@${HOSTNAME}> " \
+        --style full \
+        --reverse \
+        --bind 'ctrl-y:execute-silent(echo -n {+} | pbcopy)+clear-selection+bell' \
+        --preview 'bash -c "if [ {} = localhost ]; then exec zmx list; else ssh {} \"source ~/.zshrc && zmx list\"; fi"'
+        #--preview 'zmx list'
+)"
+
+[ "${host}" ] || exit 1
+
+if [ "${host}" = "localhost" ]; then
+  exec zmx-select
+else
+  exec ssh -t "${host}" "source ~/.zshrc && zmx-select"
+fi

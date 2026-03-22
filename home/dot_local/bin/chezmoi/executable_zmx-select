@@ -1,0 +1,46 @@
+#!/bin/bash
+
+set -e
+
+display=$(zmx list 2>/dev/null | sed 's/→//' | while IFS=$'\t' read -r name pid clients created dir; do
+  name=${name#name=}
+  pid=${pid#pid=}
+  clients=${clients#clients=}
+  dir=${dir#start_dir=}
+  printf "%-20s %-8s %-2s %s\n" "$name" "$pid" "$clients" "$dir"
+done)
+
+output=$({ [[ -n "$display" ]] && echo "$display"; } | fzf \
+  --header="[zmx select] Enter: select | Ctrl-N: create new" \
+  --prompt="${USER}@${HOSTNAME}> " \
+  --style full \
+  --reverse \
+  --print-query \
+  --expect=ctrl-n \
+  --preview='zmx history {1} --vt' \
+)
+rc=$?
+
+query=$(echo "$output" | sed -n '1p')
+key=$(echo "$output" | sed -n '2p')
+selected=$(echo "$output" | sed -n '3p')
+
+if [[ "$key" == "ctrl-n" && -n "$query" ]]; then
+  session_name="$query"
+elif [[ "$key" == "ctrl-n" ]]; then
+  sessions="$(zmx list --short)"
+  for i in $(seq 100); do
+    session_name="new$i"
+    if ! echo "${sessions}" | grep -qx "$session_name"; then
+      break
+    fi
+  done
+elif [[ $rc -eq 0 && -n "$selected" ]]; then
+  session_name=$(echo "$selected" | awk '{print $1}')
+elif [[ -n "$query" ]]; then
+  session_name="$query"
+else
+  exit 130
+fi
+
+zmx attach "$session_name"
