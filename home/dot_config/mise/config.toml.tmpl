@@ -31,19 +31,19 @@ postinstall = """zsh -c \"(
 """
 
 [tools."http:zmx"]
-version = "0.4.2"
+version = "{{- $zmx_version := "0.4.2" -}}{{$zmx_version}}"
 url = "
 {{- if eq .chezmoi.os "darwin" -}}
 {{- if eq .chezmoi.arch "arm64" -}}
-https://zmx.sh/a/zmx-0.4.2-macos-aarch64.tar.gz
+https://zmx.sh/a/zmx-{{$zmx_version}}-macos-aarch64.tar.gz
 {{- else -}}
-https://zmx.sh/a/zmx-0.4.2-macos-x86_64.tar.gz
+https://zmx.sh/a/zmx-{{$zmx_version}}-macos-x86_64.tar.gz
 {{- end -}}
 {{- else -}}
 {{- if eq .chezmoi.arch "arm64" -}}
-https://zmx.sh/a/zmx-0.4.2-linux-aarch64.tar.gz
+https://zmx.sh/a/zmx-{{$zmx_version}}-linux-aarch64.tar.gz
 {{- else -}}
-https://zmx.sh/a/zmx-0.4.2-linux-x86_64.tar.gz
+https://zmx.sh/a/zmx-{{$zmx_version}}-linux-x86_64.tar.gz
 {{- end -}}
 {{- end -}}
 "
