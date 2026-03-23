@@ -66,6 +66,7 @@ source <(mise activate zsh)
 source <(zoxide init zsh)
 
 source <(zmx completions zsh)
+export ZMX_DIR=/tmp/zmx-${USER}
 
 if [[ $options[zle] = on ]]; then
   source <(fzf --zsh)
