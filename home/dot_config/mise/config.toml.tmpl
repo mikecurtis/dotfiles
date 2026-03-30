@@ -152,4 +152,4 @@ pu = """() {(
 
 mu = "mise upgrade -y && mise prune -y"
 
-u = "cd {{.chezmoi.homeDir}}/.local/share/chezmoi && git pull && ./util/bootstrap.sh && cmu && pu && mu"
+u = "( cd {{.chezmoi.homeDir}}/.local/share/chezmoi && git pull && ./util/bootstrap.sh && cmu && pu && mu )"
