@@ -9,6 +9,7 @@ eza = "latest"
 fd = "latest"
 fzf = "latest"
 github-cli = "latest"
+glow = "latest"
 jq = "latest"
 jsonschema = "latest"
 ripgrep = "latest"
@@ -18,7 +19,7 @@ yq = "latest"
 zellij = "latest"
 zoxide = "latest"
 {{- range $key, $val := .chezmoidata.userlocal.mise.tools }}
-{{$key}} = {{$val | toToml}}
+"{{$key}}" = {{$val | toToml}}
 {{- end }}
 
 [tools.neovim]
@@ -152,4 +153,4 @@ pu = """() {(
 
 mu = "mise upgrade -y && mise prune -y"
 
-u = "( cd {{.chezmoi.homeDir}}/.local/share/chezmoi && git pull && ./util/bootstrap.sh && cmu && pu && mu )"
+u = "( cd {{.chezmoi.homeDir}}/.local/share/chezmoi && git pull && ./util/bootstrap.sh && cmu && pu && mu && nvim --headless '+Lazy! sync' +qa)"

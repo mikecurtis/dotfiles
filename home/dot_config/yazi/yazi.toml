@@ -3,3 +3,16 @@ ratio = [0, 1, 5]
 
 [input]
 cursor_blink = true
+
+[[plugin.prepend_previewers]]
+url = "*.md"
+run = 'piper -- CLICOLOR_FORCE=1 glow -w=$w -s=dracula "$1"'
+
+[[plugin.prepend_previewers]]
+url = "*/"
+run = 'piper -- eza -TL=3 --color=always --icons=always --group-directories-first --no-quotes "$1"'
+
+
+[[plugin.prepend_previewers]]
+url = "*"
+run = 'piper -- bat --color=always --theme=Dracula --style=plain "$1"'
