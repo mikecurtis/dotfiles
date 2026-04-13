@@ -58,26 +58,16 @@ https://zmx.sh/a/zmx-{{$zmx_version}}-linux-x86_64.tar.gz
 ################################################
 # base utilities
 ################################################
-la = "eza -a"
-ll = "eza -l"
-lla = "eza -la"
+l = "eza -l"
 ls = "eza"
 lt = "eza --tree"
-# TODO: Change to -otoml once support is more complete.
-tq = "yq -oy"
+tq = "yq -p toml"
+y = "yazi"
 za = "zellij a || (echo 'Starting new zellij session'; zellij)"
 
 # Sets work state.  Used by zellij-new-tab
 sws = 'printf "\033]52;c;%s\007" "$(echo zellij-tab:${USER}@${HOSTNAME}:${PWD} | base64)"'
 uws = 'printf "\033]52;c;\007"'
-
-y = """{
-	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
-	command yazi "$@" --cwd-file="$tmp"
-	IFS= read -r -d '' cwd < "$tmp"
-	[ "$cwd" != "$PWD" ] && [ -d "$cwd" ] && builtin cd -- "$cwd"
-	rm -f -- "$tmp"
-}"""
 
 
 ################################################
