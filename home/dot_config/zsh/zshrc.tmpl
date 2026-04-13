@@ -44,7 +44,7 @@ setopt HIST_FCNTL_LOCK
 
 # Enabled history options
 enabled_opts=(
-  HIST_IGNORE_DUPS HIST_IGNORE_SPACE SHARE_HISTORY
+  HIST_IGNORE_DUPS HIST_IGNORE_SPACE INC_APPEND_HISTORY
 )
 for opt in "${enabled_opts[@]}"; do
   setopt "$opt"
