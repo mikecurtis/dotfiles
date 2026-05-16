@@ -126,8 +126,8 @@ pu = """() {(
   sudo -i -u "${BREWUSER}" sh -c "HOMEBREW_NO_AUTO_UPDATE=0 NONINTERACTIVE=1 brew upgrade"
   {{ $configuredFile := joinPath .chezmoi.homeDir ".config/packages/brew.txt" }}
   installedFile="$(mktemp)"
-  sort -u -o ${installedFile} ${installedFile}
   /opt/homebrew/bin/brew bundle dump --force --file="${installedFile}" --brews --casks --no-restart
+  sort -u -o ${installedFile} ${installedFile}
   hasDiff=false
   diff ${installedFile} {{$configuredFile}} || hasDiff=true
   if ${hasDiff}; then
