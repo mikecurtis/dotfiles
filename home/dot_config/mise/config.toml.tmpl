@@ -25,7 +25,7 @@ zoxide = "latest"
 {{- end }}
 
 [tools."http:zmx"]
-version = "{{- $zmx_version := "0.4.2" -}}{{$zmx_version}}"
+version = "{{- $zmx_version := "0.5.0" -}}{{$zmx_version}}"
 url = "
 {{- if eq .chezmoi.os "darwin" -}}
 {{- if eq .chezmoi.arch "arm64" -}}
