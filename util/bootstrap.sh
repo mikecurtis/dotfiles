@@ -12,7 +12,7 @@ if [ "$1" ]; then
   LOCAL_REPO="$1"
 fi
 
-fail () {
+fail() {
   echo "$@" >&2
   exit 1
 }
@@ -48,12 +48,12 @@ fi
 
 ARCH="$(uname -m)"
 case "${ARCH}" in
-  x86_64)  ARCH="amd64" ;;
-  aarch64) ARCH="arm64" ;;
-  armv7l)  ARCH="armhf" ;;
+x86_64) ARCH="amd64" ;;
+aarch64) ARCH="arm64" ;;
+armv7l) ARCH="armhf" ;;
 esac
 
-confirm () {
+confirm() {
   ${YES} && return
   read -p "$@ " choice
   case "$choice" in
@@ -63,7 +63,7 @@ confirm () {
   esac
 }
 
-force () {
+force() {
   ${FORCE} && return
   read -p "$@ " choice
   case "$choice" in
@@ -73,12 +73,12 @@ force () {
   esac
 }
 
-check_which () {
+check_which() {
   which $1 >/dev/null 2>&1
   return $?
 }
 
-install () {
+install() {
   case "${OS}" in
   arch)
     sudo pacman --noconfirm --needed -Suy $* ||
@@ -107,7 +107,7 @@ install () {
   esac
 }
 
-check_install () {
+check_install() {
   if ! check_which $1; then
     if confirm "No $1 found.  Install?"; then
       install $1 || fail "$1 installation failed!"
@@ -118,7 +118,7 @@ check_install () {
   check_which $1 || fail "No $1 found!"
 }
 
-check_install_mise () {
+check_install_mise() {
   if ! check_which mise; then
     case "${OS}" in
     ubuntu)
@@ -140,7 +140,7 @@ check_install_mise () {
   fi
 }
 
-chsh_zsh () {
+chsh_zsh() {
   shell=""
   if [ "${OS}" = "macos" ]; then
     shell="$(dscl . -read /Users/${USER} UserShell | awk '{print $2}' | awk -F/ '{print $NF}')"
@@ -162,13 +162,13 @@ chsh_zsh () {
   fi
   local rcFile="${HOME}/.zshrc"
   if ! [ -f "${rcFile}" ]; then
-    cat > "${rcFile}" <<EOF
+    cat >"${rcFile}" <<EOF
 source "${HOME}/.config/zsh/zshrc"
 EOF
   fi
 }
 
-bootstrap_chezmoi () {
+bootstrap_chezmoi() {
   mise use -g chezmoi || fail "chezmoi install failed"
   # used for validating chezmoi data
   mise use -g jq
@@ -183,6 +183,7 @@ bootstrap_chezmoi () {
   mise exec chezmoi -- chezmoi init -v ${repo} || fail "could not init chezmoi"
   mise exec chezmoi -- chezmoi apply -v || fail "could not apply chezmoi"
   mise install
+  mise run -s 'zsh -c' post-install
 }
 
 [ "${OS}" = "arch" ] && install base-devel
