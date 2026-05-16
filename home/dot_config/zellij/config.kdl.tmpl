@@ -3,24 +3,24 @@ keybinds clear-defaults=true {
 
         bind "Ctrl n" {
             Run "bash" "-c" "{{ .chezmoi.homeDir }}/.local/bin/chezmoi/zellij-new-pane" {
-		floating false
+                floating false
                 close_on_exit true
             }
         }
         bind "Ctrl Shift n" {
             Run "bash" "-c" "{{ .chezmoi.homeDir }}/.local/bin/chezmoi/zellij-new-pane" {
-		floating false
+                floating false
                 close_on_exit true
-		stacked true
+                stacked true
             }
         }
 
-	// Misc
-	bind "Ctrl /" { NextSwapLayout; }
+        // Misc
+        bind "Ctrl /" { NextSwapLayout; }
         bind "Ctrl f" { ToggleFocusFullscreen; }
         bind "Ctrl Shift d" { Detach; }
 
-	// Pane movement
+        // Pane movement
         bind "Ctrl left" { MoveFocus "left"; }
         bind "Ctrl down" { MoveFocus "down"; }
         bind "Ctrl up" { MoveFocus "up"; }
@@ -29,10 +29,10 @@ keybinds clear-defaults=true {
         bind "Ctrl Shift down" { MovePane "down"; }
         bind "Ctrl Shift up" { MovePane "up"; }
         bind "Ctrl Shift right" { MovePane "right"; }
-	bind "Ctrl -" { Resize "Decrease"; }
-	bind "Ctrl =" { Resize "Increase"; }
+        bind "Ctrl -" { Resize "Decrease"; }
+        bind "Ctrl =" { Resize "Increase"; }
 
-	// Tab management
+        // Tab management
         bind "Ctrl t" { NewTab; }
         bind "Ctrl 1" { GoToTab 1; SwitchToMode "normal"; }
         bind "Ctrl 2" { GoToTab 2; SwitchToMode "normal"; }
@@ -44,13 +44,13 @@ keybinds clear-defaults=true {
         bind "Ctrl 8" { GoToTab 8; SwitchToMode "normal"; }
         bind "Ctrl 9" { GoToTab 9; SwitchToMode "normal"; }
 
-	// TODO: Have alternate non-mac bindings?
+        // TODO: Have alternate non-mac bindings?
         bind "Ctrl PageUp" { GoToPreviousTab; }
         bind "Alt Super Left" { GoToPreviousTab; }
         bind "Ctrl PageDown" { GoToNextTab; }
         bind "Alt Super Right" { GoToNextTab; }
 
-	bind "Ctrl Shift p" { SwitchToMode "renamepane"; PaneNameInput 0; }
+        bind "Ctrl Shift p" { SwitchToMode "renamepane"; PaneNameInput 0; }
         bind "Ctrl Shift t" { SwitchToMode "renametab"; TabNameInput 0; }
     }
     shared_except "session" {
@@ -172,7 +172,7 @@ plugins {
 
 ui {
     pane_frames {
-	hide_session_name true
+        hide_session_name true
     }
 }
 
