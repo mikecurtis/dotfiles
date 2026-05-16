@@ -127,3 +127,6 @@ case ":$PATH:" in
 esac
 # pnpm end
 {{ end }}
+
+# eza uses dirs::config_dir, which on macos points to ~/Library/Application Support
+export EZA_CONFIG_DIR="${XDG_CONFIG_HOME}/eza"
