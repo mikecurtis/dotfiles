@@ -127,7 +127,6 @@ pu = """() {(
   {{ $configuredFile := joinPath .chezmoi.homeDir ".config/packages/brew.txt" }}
   installedFile="$(mktemp)"
   sort -u -o ${installedFile} ${installedFile}
-  sort -u -o {{$configuredFile}} {{$configuredFile}}
   /opt/homebrew/bin/brew bundle dump --force --file="${installedFile}" --brews --casks --no-restart
   hasDiff=false
   diff ${installedFile} {{$configuredFile}} || hasDiff=true
