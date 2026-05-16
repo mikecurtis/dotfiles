@@ -124,6 +124,20 @@ pu = """() {(
   setopt LOCAL_OPTIONS ERREXIT XTRACE
 {{ if eq .chezmoi.os "darwin" -}}
   sudo -i -u "${BREWUSER}" sh -c "HOMEBREW_NO_AUTO_UPDATE=0 NONINTERACTIVE=1 brew upgrade"
+  {{ $configuredFile := joinPath .chezmoi.homeDir ".config/packages/brew.txt" }}
+  installedFile="$(mktemp)"
+  /opt/homebrew/bin/brew bundle dump --force --file="${installedFile}" --brews --casks --no-restart
+  hasDiff=false
+  diff ${installedFile} {{$configuredFile}} || hasDiff=true
+  if ${hasDiff}; then
+    read -k 1 "REPLY?Apply brew diff? (y/N) "
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      sudo -i -u {{ template "brewuser.tmpl" . }} sh -c "brew bundle --cleanup --file={{ $configuredFile }}"
+    fi
+  else
+    echo "No brew diffs!"
+  fi
 {{- else if and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id") -}}
 {{-   if (or (eq .chezmoi.osRelease.id "debian")
              (and (hasKey .chezmoi.osRelease "idLike")
