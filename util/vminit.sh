@@ -99,6 +99,12 @@ install_base_packages () {
       install base-devel
       check_install sudo
       ;;
+    fedora)
+      check_install gcc
+      check_install gpg
+      check_install make
+      check_install sudo
+      ;;
     ubuntu)
       check_install curl
       check_install gpg
