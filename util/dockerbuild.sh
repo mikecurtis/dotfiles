@@ -6,4 +6,4 @@ cd $(dirname $0)/..
 
 USERNAME=${1:-$(whoami)}
 
-docker build -f util/Dockerfile --build-arg USERNAME=${USERNAME} -t dotfiles:latest
+docker build -f util/Dockerfile --build-arg USERNAME=${USERNAME} -t dotfiles:latest .
