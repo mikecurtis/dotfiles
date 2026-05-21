@@ -1,11 +1,9 @@
 #!/bin/bash
 
+set -ex
+
 cd $(dirname $0)/..
 
-if [ $# -eq 0 ]; then
-  USERNAME=$(whoami)
-else
-  USERNAME=$1
-fi
+USERNAME=${1:-$(whoami)}
 
-docker build util/
+docker build --build-arg USERNAME=${USERNAME} -t dotfiles:latest util/
