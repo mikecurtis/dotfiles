@@ -15,7 +15,7 @@ if ${hasDiff}; then
   read -p "Apply brew diff? (y/N) " -n 1 -r
   echo
   if [[ $REPLY =~ ^[Yy]$ ]]; then
-    sudo -i -u {{ template "brewuser.tmpl" . }} sh -c "brew bundle --cleanup --file={{ $configuredFile }} --install --force"
+    sudo -i -u {{ template "brewuser.tmpl" . }} sh -c "brew bundle install --file={{ $configuredFile }} --force && brew bundle cleanup --file={{ $configuredFile }} --force"
   fi
 else
   echo "No brew diffs!"
