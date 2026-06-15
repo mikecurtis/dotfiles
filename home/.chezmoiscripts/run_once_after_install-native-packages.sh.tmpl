@@ -7,7 +7,7 @@ set -ex
 {{ if not (stat $configuredFile) }}{{ output "touch" $configuredFile }}{{ end }}
 installedFile="$(mktemp)"
 # {{$configuredFile}}: {{ include $configuredFile | sha256sum }}
-/opt/homebrew/bin/brew bundle dump --force --file="${installedFile}" --brews --casks --no-restart
+/opt/homebrew/bin/brew bundle dump --force --file="${installedFile}" --brews --casks --no-restart --no-describe
 sort -u -o ${installedFile} ${installedFile}
 hasDiff=false
 diff ${installedFile} {{$configuredFile}} || hasDiff=true
