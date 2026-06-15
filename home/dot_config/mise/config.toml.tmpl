@@ -1,5 +1,6 @@
 [settings]
 color_theme = "dracula"
+minimum_release_age = "0d"
 
 [tools]
 bat = "latest"
@@ -25,7 +26,7 @@ zoxide = "latest"
 {{- end }}
 
 [tools."http:zmx"]
-version = "{{- $zmx_version := "0.5.0" -}}{{$zmx_version}}"
+version = "{{- $zmx_version := "0.6.0" -}}{{$zmx_version}}"
 url = "
 {{- if eq .chezmoi.os "darwin" -}}
 {{- if eq .chezmoi.arch "arm64" -}}
