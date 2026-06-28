@@ -25,24 +25,6 @@ zoxide = "latest"
 "{{$key}}" = {{$val | toToml}}
 {{- end }}
 
-[tools."http:zmx"]
-version = "{{- $zmx_version := "0.6.0" -}}{{$zmx_version}}"
-url = "
-{{- if eq .chezmoi.os "darwin" -}}
-{{- if eq .chezmoi.arch "arm64" -}}
-https://zmx.sh/a/zmx-{{$zmx_version}}-macos-aarch64.tar.gz
-{{- else -}}
-https://zmx.sh/a/zmx-{{$zmx_version}}-macos-x86_64.tar.gz
-{{- end -}}
-{{- else -}}
-{{- if eq .chezmoi.arch "arm64" -}}
-https://zmx.sh/a/zmx-{{$zmx_version}}-linux-aarch64.tar.gz
-{{- else -}}
-https://zmx.sh/a/zmx-{{$zmx_version}}-linux-x86_64.tar.gz
-{{- end -}}
-{{- end -}}
-"
-
 
 [tasks.post-install]
 run = "nvim --headless '+Lazy! sync' +qa"
