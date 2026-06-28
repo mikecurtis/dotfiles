@@ -20,7 +20,6 @@ starship = "latest"
 tree-sitter = "0.25.10"
 yazi = "latest"
 yq = "latest"
-zellij = "latest"
 zoxide = "latest"
 {{- range $key, $val := .chezmoidata.userlocal.mise.tools }}
 "{{$key}}" = {{$val | toToml}}
@@ -63,12 +62,6 @@ ls = "eza"
 lt = "eza --tree"
 tq = "yq -p toml"
 y = "yazi"
-za = "zellij a || (echo 'Starting new zellij session'; zellij)"
-zd = "zellij ac detach"
-
-# Sets work state.  Used by zellij-new-tab
-sws = 'printf "\033]52;c;%s\007" "$(echo zellij-tab:${USER}@${HOSTNAME}:${PWD} | base64)"'
-uws = 'printf "\033]52;c;\007"'
 
 
 ################################################
