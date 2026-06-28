@@ -1,0 +1,166 @@
+onboarding = false
+
+[theme]
+name = "dracula"
+
+[update]
+version_check = false
+manifest_check = true
+
+[keys]
+# Prefix key to enter prefix mode (default: "ctrl+b")
+# Examples: "ctrl+b", "f12", "esc", "-"
+# Action bindings use explicit syntax: "prefix+n" requires the prefix;
+# "ctrl+alt+n" is a direct terminal-mode shortcut.
+# Accepted key syntax: plain keys, ctrl/shift/alt/cmd/super modifiers, and special keys like enter/tab/esc/left/right/up/down.
+# Named punctuation such as minus, comma, ampersand, plus, and backtick is also accepted.
+# Most reliable direct bindings are ctrl+letter, function keys, and explicit modified chords.
+# alt+..., cmd/super, and punctuation-with-modifiers may depend on your terminal/tmux setup.
+prefix = "`"
+
+# Prefix-mode actions
+# help = "prefix+?"
+# settings = "prefix+s"
+# detach = "prefix+q"
+# reload_config = "prefix+shift+r"
+# open_notification_target = "prefix+o"
+# workspace_picker = "prefix+w"
+# goto = "prefix+g"
+# new_workspace = "prefix+shift+n"
+# new_worktree = "prefix+shift+g"
+# open_worktree = ""    # optional, unset by default
+# remove_worktree = ""  # optional, unset by default; opens confirmation
+# rename_workspace = "prefix+shift+w"
+# close_workspace = "prefix+shift+d"
+previous_workspace = "ctrl+alt+up" # optional, unset by default
+next_workspace = "ctrl+alt+down"     # optional, unset by default
+# previous_agent = ""     # optional, unset by default
+# next_agent = ""         # optional, unset by default
+# focus_agent = ""        # optional indexed binding, e.g. "prefix+alt+1..9"
+# remote_image_paste = "ctrl+v" # only active in herdr --remote; empty disables raw-key image paste
+new_tab = ["prefix+c", "ctrl+t"]
+# rename_tab = "prefix+shift+t"
+previous_tab = ["prefix+p", "ctrl+alt+left"]
+next_tab = ["prefix+n", "ctrl+alt+right"]
+# switch_tab = "prefix+1..9"
+# switch_workspace = ""   # optional indexed binding, e.g. "prefix+shift+1..9"
+# close_tab = "prefix+shift+x"
+# rename_pane = "prefix+shift+p"
+# edit_scrollback = "prefix+e"
+focus_pane_left = ["prefix+h", "ctrl+left"]
+focus_pane_down = ["prefix+j", "ctrl+down"]
+focus_pane_up = ["prefix+k", "ctrl+up"]
+focus_pane_right = ["prefix+l", "ctrl+right"]
+swap_pane_left = ["ctrl+shift+left"]
+swap_pane_down = ["ctrl+shift+down"]
+swap_pane_up = ["ctrl+shift+up"]
+swap_pane_right = ["ctrl+shift+right"]
+# cycle_pane_next = "prefix+tab"
+# cycle_pane_previous = "prefix+shift+tab"
+# last_pane = ""          # optional, unset by default; bind e.g. "prefix+tab" for global back-and-forth
+split_vertical = ["prefix+v", "ctrl+n"]
+split_horizontal = ["prefix+minus", "ctrl+shift+n"]
+# close_pane = "prefix+x"
+zoom = ["prefix+z", "ctrl+f"]       # legacy alias: fullscreen
+# resize_mode = "prefix+r"
+toggle_sidebar = ["prefix+b", "ctrl+b"]
+
+# Navigate-mode movement. These local shortcuts win while navigate mode is open.
+# They are independent from focus_pane_*. Do not include prefix+, esc, enter, tab, or 1..9 here.
+# navigate_workspace_up = "up"
+# navigate_workspace_down = "down"
+# navigate_pane_left = "h"      # left arrow always focuses the pane to the left
+# navigate_pane_down = "j"
+# navigate_pane_up = "k"
+# navigate_pane_right = "l"     # right arrow always focuses the pane to the right
+
+# Custom commands use the same binding syntax.
+# type = "shell" runs detached in the background.
+# type = "pane" opens a temporary pane and closes it when the command exits.
+# [[keys.command]]
+# key = "prefix+alt+g"
+# type = "pane"
+# command = "lazygit"
+
+# Legacy indexed shortcut config is still parsed for compatibility.
+# Prefer switch_tab, switch_workspace, and focus_agent for new configs.
+# [keys.indexed]
+# tabs = ""       # e.g. "ctrl" makes ctrl+1..9 switch tabs directly
+# workspaces = "" # e.g. "ctrl+shift" makes ctrl+shift+1..9 switch workspaces directly
+# agents = ""     # e.g. "alt" makes alt+1..9 focus agent rows directly
+
+# [worktrees]
+# directory = "~/.herdr/worktrees"
+
+[ui]
+# Sidebar width (auto-scaled based on workspace names, this sets the default)
+# sidebar_width = 26
+
+# Minimum sidebar width when expanded (columns)
+# sidebar_min_width = 18
+
+# Maximum sidebar width when expanded (columns)
+# sidebar_max_width = 36
+
+# Terminal width at or below which Herdr uses the mobile single-column layout.
+# Increase this for foldables, tablets, or wide phone terminals.
+# mobile_width_threshold = 64
+
+# Capture mouse input for Herdr's mouse UI.
+# Set false to let the terminal handle normal clicks, such as Cmd-clicking URLs.
+# Pane apps like lazygit and btop can still receive mouse when they request it.
+# mouse_capture = true
+
+# Optional modifier that forwards right-click hold/drag gestures to pane apps instead of opening Herdr's pane menu.
+# Empty/off disables this. Shift is intentionally unsupported because terminals commonly reserve Shift+mouse.
+# right_click_passthrough_modifier = ""
+
+# Force a full redraw when the outer terminal regains focus.
+# Set false to reduce visible flashing when switching back to Herdr.
+# Trade-off: rare host terminal surface corruption may persist until the next full redraw.
+# redraw_on_focus_gained = true
+
+# Pane scrollback lines to scroll per mouse wheel notch.
+# mouse_scroll_lines = 3
+
+# Ask for confirmation before closing a workspace
+# confirm_close = true
+
+# Ask for a tab name before creating a new tab.
+# Set false to create tabs immediately with generated names.
+# prompt_new_tab_name = true
+
+# Draw borders around split panes.
+# pane_borders = true
+
+# Keep split panes visually separated instead of sharing divider borders.
+# pane_gaps = true
+
+# Show detected/reported agent labels in split pane borders when no manual pane name is set.
+# show_agent_labels_on_pane_borders = false
+
+# Agent panel ordering: "spaces" (grouped by space) or "priority" (attention queue).
+# "workspaces" is accepted as an alias for "spaces".
+# agent_panel_sort = "spaces"
+
+# Accent color for highlights, borders, and navigation UI.
+# Accepts: hex (#89b4fa), named colors (cyan, blue, magenta), or rgb(r,g,b)
+# accent = "cyan"
+
+[ui.sound]
+enabled = false
+
+[session]
+# Resume supported AI-agent panes into their native conversation sessions after
+# a Herdr server restart. Requires official integrations that report session refs.
+# resume_agents_on_restore = true
+
+[remote]
+# Whether herdr manages the ssh config used for the `herdr --remote` bridge.
+# When true (default), herdr runs the bridge ssh through a generated config that
+# includes your ~/.ssh/config first and adds ServerAliveInterval/
+# ServerAliveCountMax as a fallback (so any keepalive you set yourself still
+# wins) to survive idle network/NAT timeouts. Set false to run plain ssh against
+# your ssh config unchanged — this does not force keepalive off, it only stops
+# herdr from adding its own.
+# manage_ssh_config = true
