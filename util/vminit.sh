@@ -1,12 +1,11 @@
 #!/bin/bash
 set -ex
 
-
 HOME="${HOME:-~}"
 REPO="https://github.com/mikecurtis/dotfiles"
 BREWUSER="brewdog"
 
-fail () {
+fail() {
   echo "$@" >&2
   exit 1
 }
@@ -19,6 +18,9 @@ fi
 if [ -f /etc/os-release ]; then
   . /etc/os-release
   case "${ID}" in
+  alpine)
+    OS="alpine"
+    ;;
   amzn)
     OS="fedora"
     ;;
@@ -35,7 +37,7 @@ if [ -z "$OS" ]; then
   fail "Unknown OS"
 fi
 
-confirm () {
+confirm() {
   ${YES} && return
   read -p "$@ " choice
   case "$choice" in
@@ -45,7 +47,7 @@ confirm () {
   esac
 }
 
-force () {
+force() {
   ${FORCE} && return
   read -p "$@ " choice
   case "$choice" in
@@ -55,13 +57,18 @@ force () {
   esac
 }
 
-check_which () {
+check_which() {
   which $1 >/dev/null 2>&1
   return $?
 }
 
-install () {
+install() {
   case "${OS}" in
+  alpine)
+    apk update &&
+      apk add $* ||
+      fail "apk install failed"
+    ;;
   arch)
     pacman --noconfirm --needed -Suy $* ||
       fail "${installer} install failed"
@@ -82,7 +89,7 @@ install () {
   esac
 }
 
-check_install () {
+check_install() {
   if ! check_which $1; then
     if confirm "No $1 found.  Install?"; then
       install $1 || fail "$1 installation failed!"
@@ -93,32 +100,37 @@ check_install () {
   check_which $1 || fail "No $1 found!"
 }
 
-install_base_packages () {
+install_base_packages() {
   case "${OS}" in
-    arch)
-      install base-devel
-      check_install sudo
-      ;;
-    fedora)
-      check_install gcc
-      check_install gpg
-      check_install make
-      check_install sudo
-      ;;
-    ubuntu)
-      check_install curl
-      check_install gpg
-      check_install sudo
-      ;;
+  alpine)
+    check_install curl
+    check_install git
+    check_install sudo
+    ;;
+  arch)
+    install base-devel
+    check_install sudo
+    ;;
+  fedora)
+    check_install gcc
+    check_install gpg
+    check_install make
+    check_install sudo
+    ;;
+  ubuntu)
+    check_install curl
+    check_install gpg
+    check_install sudo
+    ;;
   esac
 }
 
-create_inituser () {
+create_inituser() {
   if ! id ${INITUSER} >/dev/null 2>&1; then
     useradd -m -U ${INITUSER}
   fi
   if ! [ -f /etc/sudoers.d/${INITUSER} ]; then
-    echo "${INITUSER} ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/${INITUSER}
+    echo "${INITUSER} ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/${INITUSER}
   fi
 }
 

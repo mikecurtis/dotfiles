@@ -20,6 +20,9 @@ fail() {
 if [ -f /etc/os-release ]; then
   . /etc/os-release
   case "${ID}" in
+  alpine)
+    OS="alpine"
+    ;;
   amzn)
     OS="fedora"
     ;;
@@ -80,6 +83,11 @@ check_which() {
 
 install() {
   case "${OS}" in
+  alpine)
+    sudo apk update &&
+      sudo apk add $* ||
+      fail "apk install failed"
+    ;;
   arch)
     sudo pacman --noconfirm --needed -Suy $* ||
       fail "${installer} install failed"
