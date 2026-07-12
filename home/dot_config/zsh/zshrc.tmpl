@@ -96,7 +96,7 @@ function start_agent {
     /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
     . "${SSH_ENV}" > /dev/null
     # Add default keys (id_rsa, id_ecdsa, etc.)
-    ssh-add
+    ssh-add{{ if eq .chezmoi.os "darwin" }} --apple-use-keychain{{ end }}
 }
 
 # Source SSH settings, if applicable
