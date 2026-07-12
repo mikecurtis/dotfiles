@@ -36,11 +36,24 @@ COPY --chown=${USERNAME}:${USERNAME} . /home/${USERNAME}/.local/share/chezmoi
 WORKDIR /home/${USERNAME}/
 USER ${USERNAME}
 
-RUN echo 'source <(mise activate bash)' >> /home/${USERNAME}/.bashrc
+SHELL ["/bin/zsh", "-c", "-i"]
+
+COPY <<EOF /home/${USERNAME}/.zshrc
+export PATH="/home/${USERNAME}/.local/bin:\${PATH}"
+source <(mise activate zsh)
+EOF
+
 RUN mise use -g chezmoi
 RUN mise use -g jq
 RUN mise use -g jsonschema
 RUN mise exec chezmoi -- chezmoi init -v
 RUN mise exec chezmoi -- chezmoi apply -v
+
+COPY <<EOF /home/${USERNAME}/.zshrc
+source "\${HOME}/.config/zsh/zshrc"
+EOF
+
 RUN mise install
-RUN mise run -s 'zsh -c' post-install
+RUN mise run -s 'zsh -c -i' post-install
+
+CMD ["/bin/zsh"]
