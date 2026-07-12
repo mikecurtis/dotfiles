@@ -12,7 +12,7 @@ RUN apt-get update \
 RUN apt-get update -y
 RUN apt-get upgrade -y
 
-RUN DEBIAN_FRONTEND=noninteractiveyy apt-get install -y --no-install-recommends \
+RUN DEBIAN_FRONTEND=noninteractivey apt-get install -y --no-install-recommends \
   ca-certificates \
   curl \
   git \
@@ -26,7 +26,7 @@ RUN echo "deb [signed-by=/etc/apt/keyrings/mise-archive-keyring.asc] https://mis
 
 RUN apt-get update -y
 
-RUN DEBIAN_FRONTEND=noninteractiveyy apt-get install -y --no-install-recommends \
+RUN DEBIAN_FRONTEND=noninteractivey apt-get install -y --no-install-recommends \
   mise
 
 RUN useradd -m -s /usr/bin/zsh -d /home/${USERNAME} ${USERNAME}
