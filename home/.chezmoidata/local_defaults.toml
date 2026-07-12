@@ -2,6 +2,7 @@
 gituser = ""
 mise.tools = {}
 mise.shell_alias = {}
+ssh.authorized_keys = []
 
 [chezmoidata.hostlocal]
 compaudit.allow = []

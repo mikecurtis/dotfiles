@@ -13,7 +13,10 @@
       "gituser": {"type": "string"},
       "mise": {
         "tools": {},
-	"shell_alias": {}
+        "shell_alias": {}
+      },
+      "ssh": {
+        "authorized_keys": []
       }
     },
     "hostlocal": {
