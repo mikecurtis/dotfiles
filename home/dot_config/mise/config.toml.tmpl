@@ -139,4 +139,4 @@ mu = "mise upgrade -y && mise prune -y"
 
 mpi = "mise run -s 'zsh -c' post-install"
 
-u = "(([ -d {{.chezmoi.homeDir}}/.local/share/chezmoi.userlocal ] && git -C {{.chezmoi.homeDir}}/.local/share/chezmoi.userlocal pull) && cd {{.chezmoi.homeDir}}/.local/share/chezmoi && git pull && ./util/bootstrap.sh && cmu && pu && mu && mpi )"
+u = "(([ -d {{.chezmoi.homeDir}}/.local/share/chezmoi.userlocal ] && git -C {{.chezmoi.homeDir}}/.local/share/chezmoi.userlocal pull) ; cd {{.chezmoi.homeDir}}/.local/share/chezmoi && git pull && ./util/bootstrap.sh && cmu && pu && mu && mpi )"
