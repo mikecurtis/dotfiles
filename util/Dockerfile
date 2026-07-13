@@ -31,7 +31,11 @@ RUN DEBIAN_FRONTEND=noninteractivey apt-get install -y --no-install-recommends \
 
 RUN useradd -m -s /usr/bin/zsh -d /home/${USERNAME} ${USERNAME}
 
-COPY --chown=${USERNAME}:${USERNAME} . /home/${USERNAME}/.local/share/chezmoi
+COPY --chown=${USERNAME}:${USERNAME} --exclude=util . /home/${USERNAME}/.local/share/chezmoi
+
+COPY <<EOF /etc/sudoers.d/${USERNAME}
+${USERNAME} ALL=(ALL) NOPASSWD:ALL
+EOF
 
 WORKDIR /home/${USERNAME}/
 USER ${USERNAME}
