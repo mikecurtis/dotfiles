@@ -1,3 +1,15 @@
+if [ "${SWITCH_USER}" -o "${SWITCH_HOST}" ]; then
+  if [ "${SWITCH_HOST}" ]; then
+    if [ "${SWITCH_USER}" ]; then
+      exec ssh -t ${SWITCH_USER}@${SWITCH_HOST} zsh
+    else
+      exec ssh -t ${SWITCH_HOST} zsh
+    fi
+  else
+    exec sudo -i -u ${SWITCH_USER}
+  fi
+fi
+
 export USER="{{ .chezmoi.username }}"
 export GITUSER="{{ template "gituser.tmpl" . }}"
 export HOME="{{ .chezmoi.homeDir }}"

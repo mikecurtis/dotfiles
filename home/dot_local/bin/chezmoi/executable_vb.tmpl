@@ -63,9 +63,13 @@ function create() {
   devbox create -s ${SNAPSHOT} -- zsh ||
     fail "Could not create devbox"
 }
-#
+
+function ssh() {
+  exec devbox ssh $(devboxName) -- zsh
+}
+
 # Now iterate through the normalized arguments
-while getopts :bcnh opt; do
+while getopts ":bcnsh" opt; do
   case "$opt" in
   b)
     build
@@ -76,8 +80,11 @@ while getopts :bcnh opt; do
   n)
     devboxName
     ;;
+  s)
+    ssh
+    ;;
   h)
-    echo "Usage: $0 [-b] [-c] [-n] [-c]"
+    echo "Usage: $0 [-b] [-c] [-n] [-s] [-h]"
     exit 0
     ;;
   *)

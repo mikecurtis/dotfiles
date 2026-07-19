@@ -61,8 +61,8 @@ swap_pane_right = ["ctrl+shift+right"]
 # cycle_pane_next = "prefix+tab"
 # cycle_pane_previous = "prefix+shift+tab"
 # last_pane = ""          # optional, unset by default; bind e.g. "prefix+tab" for global back-and-forth
-split_vertical = ["prefix+v", "ctrl+n"]
-split_horizontal = ["prefix+minus", "ctrl+shift+n"]
+# split_vertical = ["prefix+v"]
+# split_horizontal = ["prefix+minus"]
 # close_pane = "prefix+x"
 zoom = ["prefix+z", "ctrl+f"]       # legacy alias: fullscreen
 # resize_mode = "prefix+r"
@@ -167,3 +167,16 @@ enabled = false
 # your ssh config unchanged — this does not force keepalive off, it only stops
 # herdr from adding its own.
 # manage_ssh_config = true
+
+
+[[keys.command]]
+key = "ctrl+n"
+type = "shell"
+command = "herdr-split.sh -h"
+description = "Split horizontal"
+
+[[keys.command]]
+key = "ctrl+shift+n"
+type = "shell"
+command = "herdr-split.sh -v"
+description = "Split vertical"
