@@ -1,0 +1,11 @@
+{
+  "$schema": "https://devboxd.s3.us-west-1.amazonaws.com/devbox.schema.json",
+  "build": {
+    "name": "REPLACEME",
+    "command": [
+      "DEBIAN_FRONTEND=noninteractive sudo apt update -y",
+      "DEBIAN_FRONTEND=noninteractive sudo apt install -y --no-install-recommends ssh build-essential",
+      "ln -s /home/vercel-sandbox/.local/share/mise/installs/herdr/latest/herdr ~/.local/bin/"
+    ]
+  }
+}

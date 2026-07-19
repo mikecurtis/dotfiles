@@ -20,3 +20,6 @@ util
 .config/aerospace/*
 .config/packages/brew.*
 {{ end }}
+{{ if not ( hasKey .chezmoidata.userlocal "devbox" ) }}
+.local/bin/chezmoi/vb
+{{ end }}

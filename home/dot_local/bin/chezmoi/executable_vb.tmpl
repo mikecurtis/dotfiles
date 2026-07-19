@@ -1,0 +1,91 @@
+#!/bin/bash
+
+{{ if hasKey .chezmoidata.userlocal "devbox" }}
+fail() {
+  echo "$@" >&2
+  exit 1
+}
+
+TEAM="{{.chezmoidata.userlocal.devbox.team}}"
+PROJECT="{{.chezmoidata.userlocal.devbox.project}}"
+REPOSITORY="{{.chezmoidata.userlocal.devbox.repository}}"
+USERNAME="vercel-sandbox"
+LABEL="vcr.vercel.com/${TEAM}/${PROJECT}/${REPOSITORY}:latest"
+
+TMPDIR="/tmp/devbox/${TEAM}/${PROJECT}/${REPOSITORY}"
+mkdir -p ${TMPDIR}
+cd "${TMPDIR}"
+if ! [ -f auth.json ]; then
+  vercel --global-config . link --yes --scope ${TEAM} --project ${PROJECT} ||
+    fail "Could not link"
+fi
+
+function snapshotName() {
+  devbox snaps --name ${REPOSITORY} --output json | jq -r '.response.snapshots.[0].sandboxSnapshotId' ||
+    fail "Could not find snapshot"
+}
+
+function devboxName() {
+  devbox ls --all --output json --limit 1 | jq -r '.response.devboxes.[0].devboxId' ||
+    fail "Could not find devbox"
+}
+
+function build() {
+  vercel --global-config . vcr login docker ||
+    fail "Could not log in"
+
+  docker buildx build \
+    -f {{.chezmoi.workingTree}}/util/Dockerfile \
+    --build-arg USERNAME=${USERNAME} \
+    --platform linux/amd64 \
+    -t "${LABEL}" \
+    {{.chezmoi.workingTree}} || fail "Could not docker build"
+
+  docker push "${LABEL}" ||
+    fail "Could not docker push"
+
+  vercel --global-config . sandbox rm "${REPOSITORY}"
+  vercel --global-config . sandbox create --image "${LABEL}" --name "${REPOSITORY}" ||
+    fail "Could not create sandbox"
+
+  vercel --global-config . sandbox snapshot "${REPOSITORY}" --stop ||
+    fail "Could not snapshot sandbox"
+
+  SNAPSHOT="$(vercel --global-config . sandbox snapshots ls --name "${REPOSITORY}" | awk '{print $1}' | sed -n '2p')" ||
+    fail "Could not find snapdshot"
+
+  devbox build --name "${REPOSITORY}" --snapshot "${SNAPSHOT}" --config {{.chezmoi.workingTree}}/util/devbox.json ||
+    fail "Could not build devbox"
+}
+
+function create() {
+  SNAPSHOT="$(snapshotName)"
+  devbox create -s ${SNAPSHOT} -- zsh ||
+    fail "Could not create devbox"
+}
+#
+# Now iterate through the normalized arguments
+while getopts :bcnh opt; do
+  case "$opt" in
+  b)
+    build
+    ;;
+  c)
+    create
+    ;;
+  n)
+    devboxName
+    ;;
+  h)
+    echo "Usage: $0 [-b] [-c] [-n] [-c]"
+    exit 0
+    ;;
+  *)
+    echo "Unexpected option: $1" >&2
+    exit 3
+    ;;
+  esac
+done
+{{ else }}
+echo "Set chezmoidata.userlocal.devbox and install Vercel to proceed"
+{{ end }}

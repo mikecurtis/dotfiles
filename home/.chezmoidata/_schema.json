@@ -10,13 +10,26 @@
       "allow": []
     },
     "userlocal": {
-      "gituser": {"type": "string"},
+      "gituser": {
+        "type": "string"
+      },
       "mise": {
         "tools": {},
         "shell_alias": {}
       },
       "ssh": {
         "authorized_keys": []
+      },
+      "devbox": {
+        "team": {
+          "type": "string"
+        },
+        "project": {
+          "type": "string"
+        },
+        "repository": {
+          "type": "string"
+        }
       }
     },
     "hostlocal": {
@@ -24,7 +37,9 @@
         "allow": []
       },
       "brew": {
-        "user": {"type": "string"},
+        "user": {
+          "type": "string"
+        },
         "brews": [],
         "casks": []
       }
