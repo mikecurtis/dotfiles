@@ -12,7 +12,9 @@ REPOSITORY="{{.chezmoidata.userlocal.devbox.repository}}"
 USERNAME="vercel-sandbox"
 LABEL="vcr.vercel.com/${TEAM}/${PROJECT}/${REPOSITORY}:latest"
 
-TMPDIR="/tmp/devbox/${TEAM}/${PROJECT}/${REPOSITORY}"
+[ "${USER}" ] || USER="$(whoami)"
+
+TMPDIR="/tmp/devbox/${USER}/${TEAM}/${PROJECT}/${REPOSITORY}"
 mkdir -p ${TMPDIR}
 cd "${TMPDIR}"
 if ! [ -f auth.json ]; then
