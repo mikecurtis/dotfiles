@@ -14,6 +14,7 @@
         "type": "string"
       },
       "mise": {
+        "minimum_release_age": {},
         "tools": {},
         "shell_alias": {}
       },
