@@ -29,7 +29,7 @@ prefix = "`"
 # open_notification_target = "prefix+o"
 # workspace_picker = "prefix+w"
 # goto = "prefix+g"
-# new_workspace = "prefix+shift+n"
+new_workspace = ["prefix+shift+n", "ctrl+shift+t"]
 # new_worktree = "prefix+shift+g"
 # open_worktree = ""    # optional, unset by default
 # remove_worktree = ""  # optional, unset by default; opens confirmation
@@ -180,3 +180,27 @@ key = "ctrl+shift+n"
 type = "shell"
 command = "herdr-split.sh -v"
 description = "Split vertical"
+
+[[keys.command]]
+key = "ctrl+alt+shift+up"
+type = "shell"
+command = "herdr-move.sh -u"
+description = "Move workspace up"
+
+[[keys.command]]
+key = "ctrl+alt+shift+down"
+type = "shell"
+command = "herdr-move.sh -d"
+description = "Move workspace down"
+
+[[keys.command]]
+key = "ctrl+alt+shift+left"
+type = "shell"
+command = "herdr-move.sh -l"
+description = "Move tab left"
+
+[[keys.command]]
+key = "ctrl+alt+shift+right"
+type = "shell"
+command = "herdr-move.sh -r"
+description = "Move tab right"
