@@ -14,7 +14,7 @@ LABEL="vcr.vercel.com/${TEAM}/${PROJECT}/${REPOSITORY}:latest"
 
 [ "${USER}" ] || USER="$(whoami)"
 
-TMPDIR="/tmp/devbox/${USER}/${TEAM}/${PROJECT}/${REPOSITORY}"
+TMPDIR="/tmp/${USER}/devbox/${TEAM}/${PROJECT}/${REPOSITORY}"
 mkdir -p ${TMPDIR}
 cd "${TMPDIR}"
 if ! [ -f auth.json ]; then
@@ -23,12 +23,12 @@ if ! [ -f auth.json ]; then
 fi
 
 function snapshotName() {
-  devbox snaps --name ${REPOSITORY} --output json | jq -r '.response.snapshots.[0].sandboxSnapshotId' ||
+  devbox --team ${TEAM} snaps --name ${REPOSITORY} --output json | jq -r '.response.snapshots.[0].sandboxSnapshotId' ||
     fail "Could not find snapshot"
 }
 
 function devboxName() {
-  devbox ls --all --output json --limit 1 | jq -r '.response.devboxes.[0].devboxId' ||
+  devbox --team ${TEAM} ls --all --output json --limit 1 | jq -r '.response.devboxes.[0].devboxId' ||
     fail "Could not find devbox"
 }
 
@@ -56,18 +56,22 @@ function build() {
   SNAPSHOT="$(vercel --global-config . sandbox snapshots ls --name "${REPOSITORY}" | awk '{print $1}' | sed -n '2p')" ||
     fail "Could not find snapdshot"
 
-  devbox build --name "${REPOSITORY}" --snapshot "${SNAPSHOT}" --config {{.chezmoi.workingTree}}/util/devbox.json ||
+  devbox --team ${TEAM} build --name "${REPOSITORY}" --snapshot "${SNAPSHOT}" --config {{.chezmoi.workingTree}}/util/devbox.json ||
     fail "Could not build devbox"
 }
 
 function create() {
   SNAPSHOT="$(snapshotName)"
-  devbox create -s ${SNAPSHOT} -- zsh ||
+  devbox --team ${TEAM} create -s ${SNAPSHOT} -- zsh ||
     fail "Could not create devbox"
 }
 
 function ssh() {
-  exec devbox ssh $(devboxName) -- zsh
+  exec devbox --team ${TEAM} ssh $(devboxName) -- zsh
+}
+
+function remote() {
+  exec herdr --remote $(devboxName)
 }
 
 # Now iterate through the normalized arguments
