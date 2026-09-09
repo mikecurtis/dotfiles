@@ -9,6 +9,7 @@ default_shell = "{{ lookPath "zsh" }}"
 [update]
 version_check = false
 manifest_check = true
+channel = "preview"
 
 [keys]
 # Prefix key to enter prefix mode (default: "ctrl+b")
@@ -61,8 +62,8 @@ swap_pane_right = ["ctrl+shift+right"]
 # cycle_pane_next = "prefix+tab"
 # cycle_pane_previous = "prefix+shift+tab"
 # last_pane = ""          # optional, unset by default; bind e.g. "prefix+tab" for global back-and-forth
-# split_vertical = ["prefix+v"]
-# split_horizontal = ["prefix+minus"]
+split_vertical = ["ctrl+n", "prefix+v"]
+split_horizontal = ["ctrl+shift+n", "prefix+minus"]
 # close_pane = "prefix+x"
 zoom = ["prefix+z", "ctrl+f"]       # legacy alias: fullscreen
 # resize_mode = "prefix+r"
@@ -168,18 +169,6 @@ enabled = false
 # herdr from adding its own.
 # manage_ssh_config = true
 
-
-[[keys.command]]
-key = "ctrl+n"
-type = "shell"
-command = "herdr-split.sh -h"
-description = "Split horizontal"
-
-[[keys.command]]
-key = "ctrl+shift+n"
-type = "shell"
-command = "herdr-split.sh -v"
-description = "Split vertical"
 
 [[keys.command]]
 key = "ctrl+alt+shift+up"
