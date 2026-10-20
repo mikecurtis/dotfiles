@@ -1,0 +1,17 @@
+-- Personalized shortcuts ported from ~/.config/ghostty/config.
+-- Appearance is separate from Lua and is stored in Rex app settings.
+-- Importable theme: themes/Firefly Traditional Personalized
+
+{{ if eq .chezmoi.os "darwin" -}}
+rex.bind("cmd+-", "client.font.decrease")
+rex.bind("cmd+shift+=", "client.font.increase")
+rex.bind("cmd+n", "client.window.new")
+rex.bind("cmd+shift+,", "client.config.reload")
+rex.bind("cmd+w", "client.close")
+rex.bind("cmd+shift+w", "client.window.close")
+rex.bind("cmd+alt+w", "client.tab.close")
+rex.bind("cmd+k", "com.superlogical.terminal.clear")
+{{ end -}}
+
+-- Copy, paste, and quit use the app's native Cmd+C, Cmd+V, and Cmd+Q.
+-- Rex defaults remain enabled; no documented clear-all equivalent was found.
