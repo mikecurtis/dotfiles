@@ -6,11 +6,13 @@ set -ex
 {{ $configuredFile := joinPath .chezmoi.homeDir ".config/packages/brew.txt" }}
 {{ if not (stat $configuredFile) }}{{ output "touch" $configuredFile }}{{ end }}
 installedFile="$(mktemp)"
+configuredFileTmp="$(mktemp)"
 # {{$configuredFile}}: {{ include $configuredFile | sha256sum }}
 /opt/homebrew/bin/brew bundle dump --force --file="${installedFile}" --brews --casks --no-restart --no-describe
 sort -u -o ${installedFile} ${installedFile}
+sort -u -o ${configuredFileTmp} {{$configuredFile}}
 hasDiff=false
-diff ${installedFile} {{$configuredFile}} || hasDiff=true
+diff ${installedFile} ${configuredFileTmp} || hasDiff=true
 if ${hasDiff}; then
   read -p "Apply brew diff? (y/N) " -n 1 -r
   echo
