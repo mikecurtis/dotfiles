@@ -11,7 +11,39 @@ rex.bind("cmd+w", "client.close")
 rex.bind("cmd+shift+w", "client.window.close")
 rex.bind("cmd+alt+w", "client.tab.close")
 rex.bind("cmd+k", "com.superlogical.terminal.clear")
-{{ end -}}
 
 -- Copy, paste, and quit use the app's native Cmd+C, Cmd+V, and Cmd+Q.
 -- Rex defaults remain enabled; no documented clear-all equivalent was found.
+
+-- Move between splits with Ctrl+Arrow.
+rex.bind("ctrl+left", "pane.focus.left")
+rex.bind("ctrl+right", "pane.focus.right")
+rex.bind("ctrl+up", "pane.focus.up")
+rex.bind("ctrl+down", "pane.focus.down")
+
+-- Move panes with Ctrl+Shift+Arrow.
+rex.bind("ctrl+shift+left", "pane.move.left")
+rex.bind("ctrl+shift+right", "pane.move.right")
+rex.bind("ctrl+shift+up", "pane.move.up")
+rex.bind("ctrl+shift+down", "pane.move.down")
+
+-- Move between tabs with Ctrl+Option+Up/Down.
+rex.bind("ctrl+alt+up", "client.tab.previous")
+rex.bind("ctrl+alt+down", "client.tab.next")
+
+-- Move the current tab with Ctrl+Shift+Option+Up/Down.
+rex.bind("ctrl+shift+alt+up", "client.tab.move.backward")
+rex.bind("ctrl+shift+alt+down", "client.tab.move.forward")
+
+-- Move between sessions with Ctrl+Option+Left/Right.
+rex.bind("ctrl+alt+left", "session.previous")
+rex.bind("ctrl+alt+right", "session.next")
+
+-- Split panes with Ctrl+L variants.
+rex.bind("ctrl+l", "pane.split.auto")
+rex.bind("ctrl+alt+l", "pane.split.right")
+rex.bind("ctrl+shift+l", "pane.split.down")
+
+-- Zoom the focused pane with Ctrl+F.
+rex.bind("ctrl+f", "pane.zoom")
+{{ end -}}
