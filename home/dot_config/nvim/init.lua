@@ -18,5 +18,8 @@ require("lazy").setup({
 		} },
 		{ import = "plugins" },
 	},
+	headless = {
+		task = false, -- hide "Running task" / "Finished task" lines in headless syncs
+	},
 	...,
 })

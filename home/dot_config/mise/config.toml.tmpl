@@ -30,7 +30,7 @@ zoxide = "latest"
 
 
 [tasks.post-install]
-run = "nvim --headless '+Lazy! sync' +qa"
+run = "nvim --headless '+Lazy! sync' +qa 2>&1 | grep -v 'HEAD is now at' || true"
 
 
 [shell_alias]
