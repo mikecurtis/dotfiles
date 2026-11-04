@@ -9,7 +9,7 @@ credential_command = "gh auth token"
 bat = "latest"
 chezmoi = "latest"
 delta = "latest"
-eza = {{ if eq .chezmoi.os "darwin" }}"0.23.4"{{ else }}"latest"{{ end }}
+eza = "latest"
 fd = "latest"
 fzf = "latest"
 github-cli = "latest"
@@ -102,7 +102,7 @@ brew = """() {
 
 # cross-platform native package update alias
 pu = """() {(
-  setopt LOCAL_OPTIONS ERREXIT XTRACE
+  setopt LOCAL_OPTIONS ERREXIT
 {{ if eq .chezmoi.os "darwin" -}}
   sudo -i -u "${BREWUSER}" sh -c "HOMEBREW_NO_AUTO_UPDATE=0 NONINTERACTIVE=1 brew upgrade"
   {{ $configuredFile := joinPath .chezmoi.homeDir ".config/packages/brew.txt" }}
