@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 HOME="${HOME:-~}"
 REPO="https://github.com/mikecurtis/dotfiles"
