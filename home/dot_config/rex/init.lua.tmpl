@@ -4,7 +4,10 @@
 
 {{ if eq .chezmoi.os "darwin" -}}
 rex.bind("cmd+-", "client.font.decrease")
+rex.bind("cmd+=", "client.font.increase")
 rex.bind("cmd+shift+=", "client.font.increase")
+rex.bind("ctrl+-", "client.font.decrease")
+rex.bind("ctrl+=", "client.font.increase")
 rex.bind("cmd+n", "client.window.new")
 rex.bind("cmd+shift+,", "client.config.reload")
 rex.bind("cmd+w", "client.close")
